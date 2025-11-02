@@ -58,14 +58,14 @@ const UsersAdmin = () => {
   const columns = [
     {
       header: 'Usuario',
-      accessor: 'nombreUsuario',
+      accessor: 'nombre_usuario',
       sortable: true,
       render: (item) => (
         <div className="flex items-center gap-2">
           <div className="w-6 h-6 bg-red-500/80 backdrop-blur-xl rounded-lg flex items-center justify-center text-white font-medium text-xs border border-white/20">
-            {item.nombreUsuario.charAt(0).toUpperCase()}
+            {item.nombre_usuario.charAt(0).toUpperCase()}
           </div>
-          <span className="text-xs font-medium text-white">{item.nombreUsuario}</span>
+          <span className="text-xs font-medium text-white">{item.nombre_usuario}</span>
         </div>
       )
     },
@@ -185,7 +185,7 @@ const UsersAdmin = () => {
         size="sm"
       >
         <p className="text-white">
-          ¿Seguro que deseas eliminar al usuario <b>{usuarioSeleccionado?.nombreUsuario}</b>?
+          ¿Seguro que deseas eliminar al usuario <b>{usuarioSeleccionado?.nombre_usuario}</b>?
         </p>
         <div className="flex justify-end gap-3 mt-4">
           <button
@@ -195,7 +195,7 @@ const UsersAdmin = () => {
             Cancelar
           </button>
           <button
-            onClick={() => handleDelete(usuarioSeleccionado?.id_usuarioRedi)}
+            onClick={() => handleDelete(usuarioSeleccionado?.id_usuario_redi)}
             className="px-4 py-2 rounded-lg bg-gradient-to-r text-gray-300 from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium text-sm shadow-lg min-w-[110px]"
           >
             Eliminar

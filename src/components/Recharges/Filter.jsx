@@ -130,7 +130,7 @@ export const Filter = ({
     return (
         <div className="bg-white/5 backdrop-blur-2xl border border-white/10 rounded-2xl p-4 shadow-lg">
             <div className="flex flex-col md:flex-row gap-3 items-center">
-                {/* 🔍 Buscador */}
+                {/* Buscador */}
                 <div className="relative flex-1 w-full">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 z-10" />
                     <input

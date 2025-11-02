@@ -107,10 +107,10 @@ const customStyles = {
 
 const UserForm = ({ usuario = null, onSubmit, onClose }) => {
     const [formData, setFormData] = useState({
-        nombreUsuario: "",
+        nombre_usuario: "",
         nombre: "",
         apellido: "",
-        contraseniaUsuario: "",
+        contrasenia_usuario: "",
         id_rol: 2,
         activo: true,
     });
@@ -122,13 +122,13 @@ const UserForm = ({ usuario = null, onSubmit, onClose }) => {
 
     // Validaciones
     const isValid = {
-        nombreUsuario: formData.nombreUsuario.trim().length >= 3,
+        nombre_usuario: formData.nombre_usuario.trim().length >= 3,
         nombre: formData.nombre.trim().length >= 2,
         apellido: formData.apellido.trim().length >= 2,
-        contraseniaUsuario: isEditMode || formData.contraseniaUsuario.length >= 6,
+        contrasenia_usuario: isEditMode || formData.contrasenia_usuario.length >= 6,
     };
 
-    const isFormValid = isValid.nombreUsuario && isValid.nombre && isValid.apellido && isValid.contraseniaUsuario;
+    const isFormValid = isValid.nombre_usuario && isValid.nombre && isValid.apellido && isValid.contrasenia_usuario;
 
     // Opciones para el select de roles
     const roleOptions = [
@@ -139,10 +139,10 @@ const UserForm = ({ usuario = null, onSubmit, onClose }) => {
     useEffect(() => {
         if (usuario) {
             setFormData({
-                nombreUsuario: usuario.nombreUsuario,
+                nombre_usuario: usuario.nombre_usuario,
                 nombre: usuario.nombre,
                 apellido: usuario.apellido,
-                contraseniaUsuario: "",
+                contrasenia_usuario: "",
                 id_rol: usuario.id_rol,
                 activo: usuario.activo,
             });
@@ -174,17 +174,17 @@ const UserForm = ({ usuario = null, onSubmit, onClose }) => {
 
         try {
             const url = isEditMode
-                ? `/usuarios/${usuario.id_usuarioRedi}`
+                ? `/usuarios/${usuario.id_usuario_redi}`
                 : `/usuarios`;
 
             const method = isEditMode ? "put" : "post";
 
             const dataToSend = { ...formData };
-            if (isEditMode && !dataToSend.contraseniaUsuario) {
-                delete dataToSend.contraseniaUsuario;
+            if (isEditMode && !dataToSend.contrasenia_usuario) {
+                delete dataToSend.contrasenia_usuario;
             }
 
-            await api[method](url, dataToSend); // 👈 el token y expiración se manejan automáticamente
+            await api[method](url, dataToSend);
 
             onSubmit?.();
             onClose?.();
@@ -215,13 +215,13 @@ const UserForm = ({ usuario = null, onSubmit, onClose }) => {
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <InputField
                             label="Usuario"
-                            name="nombreUsuario"
-                            value={formData.nombreUsuario}
+                            name="nombre_usuario"
+                            value={formData.nombre_usuario}
                             onChange={handleChange}
                             icon={<User className="w-4 h-4" />}
                             required
-                            isValid={isValid.nombreUsuario}
-                            touched={touched.nombreUsuario}
+                            isValid={isValid.nombre_usuario}
+                            touched={touched.nombre_usuario}
                             errorMessage="El usuario debe tener al menos 3 caracteres"
                         />
                         <InputField
@@ -252,14 +252,14 @@ const UserForm = ({ usuario = null, onSubmit, onClose }) => {
                         <InputField
                             label={`Contraseña${isEditMode ? " (opcional)" : ""}`}
                             type="password"
-                            name="contraseniaUsuario"
-                            value={formData.contraseniaUsuario}
+                            name="contrasenia_usuario"
+                            value={formData.contrasenia_usuario}
                             onChange={handleChange}
                             icon={<Lock className="w-4 h-4" />}
                             placeholder={isEditMode ? "Dejar en blanco para mantener" : ""}
                             required={!isEditMode}
-                            isValid={isValid.contraseniaUsuario}
-                            touched={touched.contraseniaUsuario}
+                            isValid={isValid.contrasenia_usuario}
+                            touched={touched.contrasenia_usuario}
                             errorMessage="La contraseña debe tener al menos 6 caracteres"
                         />
                     </div>

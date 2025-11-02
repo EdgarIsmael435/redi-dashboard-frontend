@@ -75,9 +75,9 @@ const ClientsAdmin = () => {
             accessor: "prioridad",
             render: (item) => (
                 <span
-                    className={`px-2 py-1 text-xs font-medium rounded-lg backdrop-blur-sm border ${item.id_prioridadCliente === 1
+                    className={`px-2 py-1 text-xs font-medium rounded-lg backdrop-blur-sm border ${item.id_prioridad_cliente === 1
                         ? "bg-blue-500/20 text-blue-200 border-blue-500/30"//Baja
-                        : item.id_prioridadCliente === 2
+                        : item.id_prioridad_cliente === 2
                             ? "bg-yellow-500/20 text-yellow-200 border-yellow-500/30"// Media
                             : "bg-red-500/20 text-red-200 border-red-500/30"// Alta
                         }`}
@@ -128,7 +128,7 @@ const ClientsAdmin = () => {
     //Filtros (opcional)
     const filters = [
         {
-            key: "id_prioridadCliente",
+            key: "id_prioridad_cliente",
             placeholder: "Filtrar por prioridad",
             options: [
                 { value: 1, label: "Normal" },

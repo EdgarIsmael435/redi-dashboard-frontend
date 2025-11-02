@@ -110,7 +110,7 @@ const ClientForm = ({ cliente, onSubmit, onClose }) => {
     numero_whatsapp: "",
     nombre_cliente: "",
     nombre_distribuidor: "",
-    id_prioridadCliente: 1,
+    id_prioridad_cliente: 1,
     activo: 1,
     montos: [],
   });
@@ -141,7 +141,7 @@ const ClientForm = ({ cliente, onSubmit, onClose }) => {
         numero_whatsapp: cliente.numero_whatsapp,
         nombre_cliente: cliente.nombre_cliente,
         nombre_distribuidor: cliente.nombre_distribuidor || "",
-        id_prioridadCliente: cliente.id_prioridadCliente || 1,
+        id_prioridad_cliente: cliente.id_prioridad_cliente || 1,
         activo: cliente.activo ? 1 : 0,
         montos: cliente.montos ? cliente.montos.split(",").map(Number) : [],
       });
@@ -158,7 +158,7 @@ const ClientForm = ({ cliente, onSubmit, onClose }) => {
   const handlePriorityChange = (selectedOption) => {
     setFormData((prev) => ({
       ...prev,
-      id_prioridadCliente: selectedOption.value
+      id_prioridad_cliente: selectedOption.value
     }));
     if (error) setError(null);
   };
@@ -200,7 +200,7 @@ const ClientForm = ({ cliente, onSubmit, onClose }) => {
 
   };
 
-  const selectedPriority = priorityOptions.find(option => option.value === formData.id_prioridadCliente);
+  const selectedPriority = priorityOptions.find(option => option.value === formData.id_prioridad_cliente);
 
   return (
     <div className="space-y-5 text-white">
