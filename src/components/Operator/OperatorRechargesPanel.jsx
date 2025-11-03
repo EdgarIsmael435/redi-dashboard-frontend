@@ -124,7 +124,7 @@ const OperatorRechargesPanel = () => {
     );
   };
 
-  const handleSend = (id_ticketRecarga, folioAuto, id_operador, operador) => {
+  const handleSend = (id_ticketRecarga, folioAuto, id_usuario_redi, operador) => {
     if (sendingId === id_ticketRecarga) return;
     setSendingId(id_ticketRecarga);
 
@@ -140,8 +140,8 @@ const OperatorRechargesPanel = () => {
       socketRef.current.emit("process-recharge", {
         ticketId: id_ticketRecarga,
         folio: recharge.Folio,
-        esFolioFalso: folioAuto,
-        id_operador:id_operador,
+        id_usuario_redi:id_usuario_redi,
+        esFolioFalso: folioAuto,        
         nombreOperador: operador,
       });
     }

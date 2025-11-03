@@ -113,7 +113,7 @@ const AdminRechargesPanel = () => {
     );
   };
 
-  const handleSend = (id_ticketRecarga, folioAuto, id_operador, operador) => {
+  const handleSend = (id_ticketRecarga, folioAuto, id_usuario_redi, operador) => {
     if (sendingId === id_ticketRecarga) return;
     setSendingId(id_ticketRecarga);
 
@@ -123,14 +123,15 @@ const AdminRechargesPanel = () => {
       return;
     }
 
-    if (socketRef.current) {
+    if (socketRef.current) {      
+      console.log(id_usuario_redi);
       socketRef.current.emit("process-recharge", {
         ticketId: id_ticketRecarga,
         folio: recharge.Folio,
-        esFolioFalso: folioAuto,
-        id_operador:id_operador,
+        id_usuario_redi: id_usuario_redi,
+        esFolioFalso: folioAuto,        
         nombreOperador: operador,
-      });
+      }); 
     }
   };
 
@@ -159,9 +160,8 @@ const AdminRechargesPanel = () => {
     };
     return (
       <span
-        className={`px-2 py-1 text-xs rounded-lg border backdrop-blur-sm ${
-          colors[priority?.toLowerCase()] || colors.baja
-        } font-medium`}
+        className={`px-2 py-1 text-xs rounded-lg border backdrop-blur-sm ${colors[priority?.toLowerCase()] || colors.baja
+          } font-medium`}
       >
         {priority}
       </span>
