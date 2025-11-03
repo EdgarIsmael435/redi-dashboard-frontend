@@ -158,7 +158,7 @@ export const TableRecharges = ({
                                                 <td className="px-3 py-2">
                                                     {status === "PENDIENTE" ? (
                                                         <button
-                                                            onClick={() => handleSend(id, folioAuto, userData?.nombreUsuario)}
+                                                            onClick={() => handleSend(id, folioAuto, userData?.id, userData?.nombreUsuario)}
                                                             disabled={!r.Folio || sendingId === id}
                                                             className="px-3 py-1.5 rounded-lg bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-medium disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-1 focus:ring-red-500/50 shadow-md text-xs backdrop-blur-xl"
                                                         >
@@ -260,7 +260,7 @@ export const TableRecharges = ({
                                         />
                                         {status === "PENDIENTE" ? (
                                             <button
-                                                onClick={() => handleSend(id, folioAuto, userData?.nombreUsuario)}
+                                                onClick={() => handleSend(id, folioAuto, userData?.id, userData?.nombreUsuario)}
                                                 disabled={!r.Folio || sendingId === id}
                                                 className="px-3 py-1 rounded-md bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-medium disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-red-500/50 shadow-md text-xs backdrop-blur-xl whitespace-nowrap"
                                             >

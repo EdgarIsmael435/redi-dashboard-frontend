@@ -124,7 +124,7 @@ const OperatorRechargesPanel = () => {
     );
   };
 
-  const handleSend = (id_ticketRecarga, folioAuto, operador) => {
+  const handleSend = (id_ticketRecarga, folioAuto, id_operador, operador) => {
     if (sendingId === id_ticketRecarga) return;
     setSendingId(id_ticketRecarga);
 
@@ -141,6 +141,7 @@ const OperatorRechargesPanel = () => {
         ticketId: id_ticketRecarga,
         folio: recharge.Folio,
         esFolioFalso: folioAuto,
+        id_operador:id_operador,
         nombreOperador: operador,
       });
     }
