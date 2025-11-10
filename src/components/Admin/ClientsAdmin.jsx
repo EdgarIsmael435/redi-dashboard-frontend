@@ -71,6 +71,7 @@ const ClientsAdmin = () => {
         },
         { header: "Cliente", accessor: "nombre_cliente", sortable: true },
         { header: "Distribuidor", accessor: "nombre_distribuidor", sortable: true },
+        { header: "Nombre Grupo Wp", accessor: "nombre_grupo_wp", sortable: true },
         {
             header: "Prioridad",
             accessor: "prioridad",
@@ -132,9 +133,9 @@ const ClientsAdmin = () => {
             key: "id_prioridad_cliente",
             placeholder: "Filtrar por prioridad",
             options: [
-                { value: 1, label: "Normal" },
-                { value: 2, label: "Alta" },
-                { value: 3, label: "Crítica" },
+                { value: 1, label: "Alta" },
+                { value: 2, label: "Media" },
+                { value: 3, label: "Baja" },
             ],
         },
         {

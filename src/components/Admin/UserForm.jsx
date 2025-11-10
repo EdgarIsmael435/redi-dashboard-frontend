@@ -151,9 +151,17 @@ const UserForm = ({ usuario = null, onSubmit, onClose }) => {
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
+
+        let sanitizedValue = value;
+
+        // Si es texto: convertir a mayúsculas y eliminar espacios al inicio/final
+        if (["nombre_usuario", "nombre", "apellido"].includes(name)) {
+            sanitizedValue = value.toUpperCase().replace(/\s{2,}/g, " "); // evita espacios al inicio
+        }
+
         setFormData((prev) => ({
             ...prev,
-            [name]: type === "checkbox" ? checked : value,
+            [name]: type === "checkbox" ? checked : sanitizedValue,
         }));
         setTouched((prev) => ({ ...prev, [name]: true }));
         if (error) setError(null);

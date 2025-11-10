@@ -56,7 +56,7 @@ const LoginForm = () => {
             setIsLoading(false);
         }
     };
-    
+
     return (
         <BackContainer>
             <div className='flex items-center justify-center min-h-screen p-4'>
@@ -156,7 +156,7 @@ const LoginForm = () => {
                         </div>
 
                         {/* Footer */}
-                        <div className="mt-8 text-center">
+                        {/*  <div className="mt-8 text-center">
                             <p className="text-sm text-gray-400">
                                 ¿Olvidaste tu contraseña?{' '}
                                 <a
@@ -166,7 +166,7 @@ const LoginForm = () => {
                                     Click aquí
                                 </a>
                             </p>
-                        </div>
+                        </div> */}
                     </div>
 
                     {/* Additional glass effect at bottom */}

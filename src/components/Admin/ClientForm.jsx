@@ -110,6 +110,7 @@ const ClientForm = ({ cliente, onSubmit, onClose }) => {
     numero_whatsapp: "",
     nombre_cliente: "",
     nombre_distribuidor: "",
+    nombre_grupo_wp: "",
     id_prioridad_cliente: 1,
     activo: 1,
     montos: [],
@@ -145,6 +146,7 @@ const ClientForm = ({ cliente, onSubmit, onClose }) => {
         numero_whatsapp: cliente.numero_whatsapp,
         nombre_cliente: cliente.nombre_cliente,
         nombre_distribuidor: cliente.nombre_distribuidor || "",
+        nombre_grupo_wp: cliente.nombre_grupo_wp || "",
         id_prioridad_cliente: cliente.id_prioridad_cliente || 1,
         activo: cliente.activo ? 1 : 0,
         montos: cliente.montos ? cliente.montos.split(",").map(Number) : [],
@@ -154,13 +156,23 @@ const ClientForm = ({ cliente, onSubmit, onClose }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    const sanitizedValue =
-      name === "numero_whatsapp" ? value.replace(/\D/g, "") : value;
+
+    let sanitizedValue = value;
+
+    // Si es número de WhatsApp: solo dígitos
+    if (name === "numero_whatsapp") {
+      sanitizedValue = value.replace(/\D/g, "");
+    }
+    // Si es texto: convertir a mayúsculas y eliminar espacios al inicio/final
+    else if (["nombre_cliente", "nombre_distribuidor", "nombre_grupo_wp"].includes(name)) {
+      sanitizedValue = value.toUpperCase().replace(/\s{2,}/g, " "); // evita espacios al inicio
+    }
 
     setFormData((prev) => ({ ...prev, [name]: sanitizedValue }));
     setTouched((prev) => ({ ...prev, [name]: true }));
     if (error) setError(null);
   };
+
 
   const handlePriorityChange = (selectedOption) => {
     setFormData((prev) => ({
@@ -255,6 +267,16 @@ const ClientForm = ({ cliente, onSubmit, onClose }) => {
               onChange={handleChange}
               icon={<Users className="w-4 h-4" />}
               placeholder="Opcional"
+            />
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-1 gap-4">
+            <InputField
+              label="Nombre grupo de WhatsApp"
+              name="nombre_grupo_wp"
+              value={formData.nombre_grupo_wp}
+              onChange={handleChange}
+              icon={<Users className="w-4 h-4" />}
+              placeholder="GRUPO DE SOPORTE RED"
             />
           </div>
         </div>
