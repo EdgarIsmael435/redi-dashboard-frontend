@@ -4,12 +4,8 @@ import { io } from "socket.io-client";
 import { HeaderContainer } from "../General/HeaderContainer";
 import { Filter } from "../Recharges/Filter";
 import { TableRecharges } from "../Recharges/TableRecharges";
+import { companyConfig, companyOptions, statusOptions, LogoIcon } from "../../constants/recharges";
 
-const LogoIcon = ({ company }) => (
-  <div className="flex items-center justify-center text-xs font-bold text-white">
-    {company.charAt(0)}
-  </div>
-);
 
 const AdminRechargesPanel = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -21,27 +17,6 @@ const AdminRechargesPanel = () => {
   const [user, setUser] = useState(null);
   const socketRef = useRef(null);
 
-  //Config de compañías
-  const companyConfig = {
-    virgin: { leftBorder: "border-l-4 border-red-500", bg: "bg-red-500/10", icon: <LogoIcon company="Virgin" />, legendColor: "bg-red-500" },
-    unefon: { leftBorder: "border-l-4 border-yellow-500", bg: "bg-yellow-500/10", icon: <LogoIcon company="Unefon" />, legendColor: "bg-yellow-500" },
-    movistar: { leftBorder: "border-l-4 border-green-500", bg: "bg-green-500/10", icon: <LogoIcon company="Movistar" />, legendColor: "bg-green-500" },
-    att: { leftBorder: "border-l-4 border-blue-500", bg: "bg-blue-500/10", icon: <LogoIcon company="ATT" />, legendColor: "bg-blue-500" },
-  };
-
-  const companyOptions = [
-    { value: "all", label: "Todas las compañías" },
-    { value: "virgin", label: "Virgin Mobile" },
-    { value: "unefon", label: "Unefon" },
-    { value: "movistar", label: "Movistar" },
-    { value: "att", label: "AT&T" },
-  ];
-
-  const statusOptions = [
-    { value: "all", label: "Todos los estados" },
-    { value: "PENDIENTE", label: "Pendiente" },
-    { value: "COMPLETADO", label: "Completado" },
-  ];
 
   //Conectar socket con autenticación
   useEffect(() => {
@@ -123,15 +98,15 @@ const AdminRechargesPanel = () => {
       return;
     }
 
-    if (socketRef.current) {      
+    if (socketRef.current) {
       console.log(id_usuario_redi);
       socketRef.current.emit("process-recharge", {
         ticketId: id_ticketRecarga,
         folio: recharge.Folio,
         id_usuario_redi: id_usuario_redi,
-        esFolioFalso: folioAuto,        
+        esFolioFalso: folioAuto,
         nombreOperador: operador,
-      }); 
+      });
     }
   };
 

@@ -129,11 +129,15 @@ const ClientForm = ({ cliente, onSubmit, onClose }) => {
 
   // Validaciones
   const isValid = {
-    numero_whatsapp: formData.numero_whatsapp.trim().length >= 10,
+    numero_whatsapp: formData.numero_whatsapp.trim().length == 13,
     nombre_cliente: formData.nombre_cliente.trim().length >= 2,
   };
 
-  const isFormValid = isValid.numero_whatsapp && isValid.nombre_cliente;
+  const hasValidMontos =
+    formData.montos.length > 0 &&
+    formData.montos.every((m) => m !== "" && Number(m) > 0);
+
+  const isFormValid = isValid.numero_whatsapp && isValid.nombre_cliente && hasValidMontos;
 
   useEffect(() => {
     if (cliente) {
@@ -150,7 +154,10 @@ const ClientForm = ({ cliente, onSubmit, onClose }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const sanitizedValue =
+      name === "numero_whatsapp" ? value.replace(/\D/g, "") : value;
+
+    setFormData((prev) => ({ ...prev, [name]: sanitizedValue }));
     setTouched((prev) => ({ ...prev, [name]: true }));
     if (error) setError(null);
   };
@@ -222,11 +229,11 @@ const ClientForm = ({ cliente, onSubmit, onClose }) => {
             value={formData.numero_whatsapp}
             onChange={handleChange}
             icon={<Phone className="w-4 h-4" />}
-            placeholder="+52 555 123 4567"
+            placeholder="5215551234567"
             required
             isValid={isValid.numero_whatsapp}
             touched={touched.numero_whatsapp}
-            errorMessage="El número debe tener al menos 10 dígitos"
+            errorMessage="El número debe tener 13 dígitos (asegurate de agregar 521 al inicio del número)"
           />
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -302,8 +309,9 @@ const ClientForm = ({ cliente, onSubmit, onClose }) => {
         <div className="space-y-3 pt-2">
           <div className="flex items-center justify-between">
             <label className="text-xs font-medium text-gray-400 uppercase tracking-wide">
-              Montos Permitidos
+              Montos Permitidos<span className="text-red-400 ml-1">*</span>
             </label>
+
             <button
               type="button"
               onClick={handleAddMonto}
@@ -321,7 +329,7 @@ const ClientForm = ({ cliente, onSubmit, onClose }) => {
               <p className="text-xs text-gray-500 mt-1">Haz clic en "Agregar monto" para comenzar</p>
             </div>
           ) : (
-            <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
+            <div className="space-y-2 max-h-48 overflow-y-auto p-1">
               {formData.montos.map((monto, i) => (
                 <div key={i} className="flex gap-2 items-center group">
                   <div className="flex-1 relative">
@@ -347,6 +355,12 @@ const ClientForm = ({ cliente, onSubmit, onClose }) => {
                 </div>
               ))}
             </div>
+          )}
+          {!hasValidMontos && (
+            <p className="text-xs text-red-400 mt-1.5 flex items-center gap-1">
+              <AlertCircle className="w-4 h-4" />
+              Debes agregar al menos un monto válido antes de guardar.
+            </p>
           )}
         </div>
 

@@ -32,6 +32,7 @@ const UsersAdmin = () => {
     try {
       await api.delete(`/usuarios/${id}`);
       setOpenDelete(false);
+      setUsuarioSeleccionado(null);
       obtenerUsuarios();
     } catch (error) {
       console.error("Error eliminando usuario:", error.response?.data || error.message);
@@ -180,7 +181,11 @@ const UsersAdmin = () => {
 
       <Modal
         isOpen={openDelete}
-        onClose={() => setOpenDelete(false)}
+        onClose={() => {
+          setOpenDelete(false);
+          setUsuarioSeleccionado(null);
+        }
+        }
         title="Confirmar eliminación"
         size="sm"
       >
@@ -189,7 +194,10 @@ const UsersAdmin = () => {
         </p>
         <div className="flex justify-end gap-3 mt-4">
           <button
-            onClick={() => setOpenDelete(false)}
+            onClick={() => {
+              setOpenDelete(false);
+              setUsuarioSeleccionado(null);
+            }}
             className="px-4 py-2 rounded-lg bg-slate-700/50 text-gray-300 hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all font-medium text-sm border border-white/10 hover:border-white/20"
           >
             Cancelar

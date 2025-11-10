@@ -3,50 +3,17 @@ import { Clock, CheckCircle, Zap } from "lucide-react";
 import { io } from "socket.io-client";
 import { HeaderContainer } from "../General/HeaderContainer";
 import { TableRecharges } from "../Recharges/TableRecharges";
-
-const LogoIcon = ({ company }) => (
-  <div className="flex items-center justify-center text-xs font-bold text-white">
-    {company.charAt(0)}
-  </div>
-);
+import { companyConfig, LogoIcon } from "../../constants/recharges";
 
 const OperatorRechargesPanel = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterCompany, setFilterCompany] = useState("all");
-  const [filterStatus, setFilterStatus] = useState("PENDIENTE");
+  const [filterStatus, setFilterStatus] = useState("all");
   const [recharges, setRecharges] = useState([]);
   const [isConnected, setIsConnected] = useState(false);
   const [sendingId, setSendingId] = useState(null);
   const [user, setUser] = useState(null);
   const socketRef = useRef(null);
-
-  //Configuración de colores e íconos por compañía
-  const companyConfig = {
-    virgin: {
-      leftBorder: "border-l-4 border-red-500",
-      bg: "bg-red-500/10",
-      icon: <LogoIcon company="Virgin" />,
-      legendColor: "bg-red-500",
-    },
-    unefon: {
-      leftBorder: "border-l-4 border-yellow-500",
-      bg: "bg-yellow-500/10",
-      icon: <LogoIcon company="Unefon" />,
-      legendColor: "bg-yellow-500",
-    },
-    movistar: {
-      leftBorder: "border-l-4 border-green-500",
-      bg: "bg-green-500/10",
-      icon: <LogoIcon company="Movistar" />,
-      legendColor: "bg-green-500",
-    },
-    att: {
-      leftBorder: "border-l-4 border-blue-500",
-      bg: "bg-blue-500/10",
-      icon: <LogoIcon company="ATT" />,
-      legendColor: "bg-blue-500",
-    },
-  };
 
   //Conexión WebSocket con autenticación
   useEffect(() => {

@@ -50,6 +50,7 @@ const ClientsAdmin = () => {
             await api.delete(`/clients/${id}`);
             setOpenDelete(false);
             obtenerClientes();
+            setClienteSeleccionado(null);
         } catch (error) {
             console.error("Error eliminando cliente:", error.response?.data || error.message);
         }
@@ -168,7 +169,10 @@ const ClientsAdmin = () => {
                 loading={loading}
                 headerAction={
                     <button
-                        onClick={() => setOpenCreate(true)}
+                        onClick={() => {
+                            setOpenCreate(true);
+                            setClienteSeleccionado(null);
+                        }}
                         className="flex items-center justify-center gap-2 w-full md:w-auto px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white text-xs font-medium rounded-xl shadow-lg transition-all border border-green-500/30"
                     >
                         <UserPlus className="w-4 h-4" />
@@ -208,7 +212,10 @@ const ClientsAdmin = () => {
             {/* Modal Eliminar */}
             <Modal
                 isOpen={openDelete}
-                onClose={() => setOpenDelete(false)}
+                onClose={() => {
+                    setOpenDelete(false);
+                    setClienteSeleccionado(null);
+                }}
                 title="Confirmar eliminación"
                 size="sm"
             >
@@ -218,7 +225,10 @@ const ClientsAdmin = () => {
                 </p>
                 <div className="flex justify-end gap-3 mt-4">
                     <button
-                        onClick={() => setOpenDelete(false)}
+                        onClick={() => {
+                            setOpenDelete(false);
+                            setClienteSeleccionado(null);
+                        }}
                         className="px-4 py-2 rounded-lg bg-slate-700/50 text-gray-300 hover:bg-slate-700 border border-white/10 hover:border-white/20 text-sm font-medium"
                     >
                         Cancelar
