@@ -165,7 +165,7 @@ const ClientForm = ({ cliente, onSubmit, onClose }) => {
     }
     // Si es texto: convertir a mayúsculas y eliminar espacios al inicio/final
     else if (["nombre_cliente", "nombre_distribuidor", "nombre_grupo_wp"].includes(name)) {
-      sanitizedValue = value.toUpperCase().replace(/\s{2,}/g, " "); // evita espacios al inicio
+      sanitizedValue = value.replace(/\s{2,}/g, " "); // evita espacios al inicio
     }
 
     setFormData((prev) => ({ ...prev, [name]: sanitizedValue }));
