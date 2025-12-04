@@ -20,7 +20,10 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => {
     const newToken = response.headers["x-new-token"];
-    if (newToken) localStorage.setItem("token", newToken);
+    if (newToken) {
+      localStorage.setItem("token", newToken);
+      window.dispatchEvent(new Event("tokenUpdated"));
+    }
     return response;
   },
   (error) => {

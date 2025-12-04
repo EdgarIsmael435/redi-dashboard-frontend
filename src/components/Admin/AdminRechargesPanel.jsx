@@ -98,8 +98,7 @@ const AdminRechargesPanel = () => {
       return;
     }
 
-    if (socketRef.current) {
-      console.log(id_usuario_redi);
+    if (socketRef.current) {      
       socketRef.current.emit("process-recharge", {
         ticketId: id_ticketRecarga,
         folio: recharge.Folio,
