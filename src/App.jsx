@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import PrivateRoute from "./components/PrivateRoute";
 import LoginForm from "./components/LoginForm";
@@ -27,7 +29,7 @@ function App() {
         // Si el token ya expiró → muestra modal
         if (decoded.exp && decoded.exp < now) {
           setSessionExpired(true);
-        } 
+        }
         // Si aún no expira → programa revisión justo antes del vencimiento
         else if (decoded.exp) {
           const remaining = (decoded.exp - now) * 1000;
@@ -42,6 +44,19 @@ function App() {
 
     // Escuchar expiración desde el interceptor (401)
     onSessionExpired(() => setSessionExpired(true));
+
+    //Escuchar expiración desde socket (token inválido al reconectar)
+    const handleSocketExpire = () => {
+      setSessionExpired(true);
+    };
+
+    window.addEventListener("sessionExpiredSocket", handleSocketExpire);
+
+    // Cleanup
+    return () => {
+      window.removeEventListener("sessionExpiredSocket", handleSocketExpire);
+    };
+
   }, []);
 
   const handleCloseSession = () => {
@@ -83,7 +98,14 @@ function App() {
         <Route path="/unauthorized" element={<Unauthorized />} />
       </Routes>
 
-      {/* 🟥 Modal de sesión expirada */}
+      {/*Contenedor de notificaciones */}
+      <ToastContainer
+        position="bottom-right"
+        autoClose={3000}
+        theme="dark"
+        pauseOnHover
+      />
+      {/* Modal de sesión expirada */}
       <Modal
         isOpen={sessionExpired}
         onClose={handleCloseSession}

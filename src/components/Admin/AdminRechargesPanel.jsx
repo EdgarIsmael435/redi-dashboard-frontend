@@ -1,3 +1,4 @@
+import { toast } from "react-toastify";
 import { useState, useEffect, useRef } from "react";
 import { Clock, CheckCircle, Zap } from "lucide-react";
 import { io } from "socket.io-client";
@@ -8,6 +9,7 @@ import { companyConfig, companyOptions, statusOptions, LogoIcon } from "../../co
 
 
 const AdminRechargesPanel = () => {
+  const audioRef = useRef(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterCompany, setFilterCompany] = useState("all");
   const [filterStatus, setFilterStatus] = useState("all");
@@ -17,6 +19,17 @@ const AdminRechargesPanel = () => {
   const [user, setUser] = useState(null);
   const socketRef = useRef(null);
 
+
+  //Audio notificación
+  useEffect(() => {
+    const audio = new Audio('/sounds/redi_notificacion.mp3');
+
+    audio.addEventListener('canplaythrough', () => {
+      audioRef.current = audio;
+    });
+
+    audio.load();
+  }, []);
 
   //Conectar socket con autenticación
   useEffect(() => {
@@ -47,6 +60,9 @@ const AdminRechargesPanel = () => {
     });
 
     socket.on("new-recharge", (rec) => {
+      audioRef.current.currentTime = 0;
+      audioRef.current.play().catch(() => { });
+      toast.info(`Nueva recarga de ${rec.Compania}: Monto:${rec.Monto} DN:${rec.Numero}`);
       setRecharges((prev) => [...prev, rec]);
     });
 
@@ -98,7 +114,7 @@ const AdminRechargesPanel = () => {
       return;
     }
 
-    if (socketRef.current) {      
+    if (socketRef.current) {
       socketRef.current.emit("process-recharge", {
         ticketId: id_ticketRecarga,
         folio: recharge.Folio,

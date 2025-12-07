@@ -1,3 +1,4 @@
+import { toast } from "react-toastify";
 import { useState, useEffect, useRef } from "react";
 import { Clock, CheckCircle, Zap } from "lucide-react";
 import { io } from "socket.io-client";
@@ -6,6 +7,7 @@ import { TableRecharges } from "../Recharges/TableRecharges";
 import { companyConfig, LogoIcon } from "../../constants/recharges";
 
 const OperatorRechargesPanel = () => {
+  const audioRef = useRef(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterCompany, setFilterCompany] = useState("all");
   const [filterStatus, setFilterStatus] = useState("PENDIENTE");
@@ -14,6 +16,18 @@ const OperatorRechargesPanel = () => {
   const [sendingId, setSendingId] = useState(null);
   const [user, setUser] = useState(null);
   const socketRef = useRef(null);
+
+  //Audio notificación
+  useEffect(() => {
+    const audio = new Audio('/sounds/redi_notificacion.mp3');
+
+    audio.addEventListener('canplaythrough', () => {
+      audioRef.current = audio;
+    });
+
+    audio.load();
+  }, []);
+
 
   //Conexión WebSocket con autenticación
   useEffect(() => {
@@ -37,13 +51,23 @@ const OperatorRechargesPanel = () => {
 
     socket.on("connect_error", (err) => {
       setIsConnected(false);
+
+      // Si el token expiró en el socket
+      if (err?.message?.toLowerCase().includes("expir") ||
+        err?.message?.toLowerCase().includes("invalid")) {
+        window.dispatchEvent(new Event("sessionExpiredSocket"));
+      }
     });
+
 
     socket.on("recharges", (data) => {
       setRecharges(data);
     });
 
     socket.on("new-recharge", (rec) => {
+      audioRef.current.currentTime = 0;
+      audioRef.current.play().catch(() => { });
+      toast.info(`Nueva recarga de ${rec.Compania}: Monto:${rec.Monto} DN:${rec.Numero}`);
       setRecharges((prev) => [...prev, rec]);
     });
 
@@ -107,8 +131,8 @@ const OperatorRechargesPanel = () => {
       socketRef.current.emit("process-recharge", {
         ticketId: id_ticketRecarga,
         folio: recharge.Folio,
-        id_usuario_redi:id_usuario_redi,
-        esFolioFalso: folioAuto,        
+        id_usuario_redi: id_usuario_redi,
+        esFolioFalso: folioAuto,
         nombreOperador: operador,
       });
     }
@@ -145,9 +169,8 @@ const OperatorRechargesPanel = () => {
     };
     return (
       <span
-        className={`px-2 py-1 text-xs rounded-lg border backdrop-blur-sm ${
-          colors[priority?.toLowerCase()] || colors.baja
-        } font-medium`}
+        className={`px-2 py-1 text-xs rounded-lg border backdrop-blur-sm ${colors[priority?.toLowerCase()] || colors.baja
+          } font-medium`}
       >
         {priority}
       </span>
