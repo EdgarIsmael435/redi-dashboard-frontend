@@ -283,6 +283,7 @@ export const TableRecharges = ({
                 </div>
 
                 {/* Paginación */}
+                {/* Paginación */}
                 {filteredRecharges.length > 0 && (
                     <div className="flex items-center justify-between text-xs">
                         <div className="text-gray-400">
@@ -296,18 +297,63 @@ export const TableRecharges = ({
                             >
                                 <ChevronLeft className="w-4 h-4" />
                             </button>
-                            {[...Array(totalPages)].map((_, i) => (
-                                <button
-                                    key={i + 1}
-                                    onClick={() => goToPage(i + 1)}
-                                    className={`px-3 py-1 rounded-lg border transition-all font-medium backdrop-blur-xl ${currentPage === i + 1
-                                        ? 'bg-red-500/80 text-white border-red-400'
-                                        : 'bg-white/10 hover:bg-white/20 text-gray-300 border-white/20 hover:text-white'
-                                        }`}
-                                >
-                                    {i + 1}
-                                </button>
-                            ))}
+
+                            {/* Primera página */}
+                            {currentPage > 3 && (
+                                <>
+                                    <button
+                                        onClick={() => goToPage(1)}
+                                        className="px-3 py-1 rounded-lg border transition-all font-medium backdrop-blur-xl bg-white/10 hover:bg-white/20 text-gray-300 border-white/20 hover:text-white"
+                                    >
+                                        1
+                                    </button>
+                                    {currentPage > 4 && (
+                                        <span className="px-2 py-1 text-gray-400">...</span>
+                                    )}
+                                </>
+                            )}
+
+                            {/* Páginas cercanas */}
+                            {[...Array(totalPages)].map((_, i) => {
+                                const pageNum = i + 1;
+                                if (
+                                    pageNum === currentPage ||
+                                    pageNum === currentPage - 1 ||
+                                    pageNum === currentPage - 2 ||
+                                    pageNum === currentPage + 1 ||
+                                    pageNum === currentPage + 2
+                                ) {
+                                    return (
+                                        <button
+                                            key={pageNum}
+                                            onClick={() => goToPage(pageNum)}
+                                            className={`px-3 py-1 rounded-lg border transition-all font-medium backdrop-blur-xl ${currentPage === pageNum
+                                                ? 'bg-red-500/80 text-white border-red-400'
+                                                : 'bg-white/10 hover:bg-white/20 text-gray-300 border-white/20 hover:text-white'
+                                                }`}
+                                        >
+                                            {pageNum}
+                                        </button>
+                                    );
+                                }
+                                return null;
+                            })}
+
+                            {/* Última página */}
+                            {currentPage < totalPages - 2 && (
+                                <>
+                                    {currentPage < totalPages - 3 && (
+                                        <span className="px-2 py-1 text-gray-400">...</span>
+                                    )}
+                                    <button
+                                        onClick={() => goToPage(totalPages)}
+                                        className="px-3 py-1 rounded-lg border transition-all font-medium backdrop-blur-xl bg-white/10 hover:bg-white/20 text-gray-300 border-white/20 hover:text-white"
+                                    >
+                                        {totalPages}
+                                    </button>
+                                </>
+                            )}
+
                             <button
                                 onClick={() => goToPage(currentPage + 1)}
                                 disabled={currentPage === totalPages}
