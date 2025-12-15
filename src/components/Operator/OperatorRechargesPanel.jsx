@@ -1,4 +1,3 @@
-import { toast } from "react-toastify";
 import { useState, useEffect, useRef } from "react";
 import { Clock, CheckCircle, Zap } from "lucide-react";
 import { io } from "socket.io-client";
@@ -67,7 +66,6 @@ const OperatorRechargesPanel = () => {
     socket.on("new-recharge", (rec) => {
       audioRef.current.currentTime = 0;
       audioRef.current.play().catch(() => { });
-      toast.info(`Nueva recarga de ${rec.Compania}: Monto:${rec.Monto} DN:${rec.Numero}`);
       setRecharges((prev) => [...prev, rec]);
     });
 

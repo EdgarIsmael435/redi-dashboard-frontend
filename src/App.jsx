@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import PrivateRoute from "./components/PrivateRoute";
 import LoginForm from "./components/LoginForm";
@@ -97,14 +95,6 @@ function App() {
 
         <Route path="/unauthorized" element={<Unauthorized />} />
       </Routes>
-
-      {/*Contenedor de notificaciones */}
-      <ToastContainer
-        position="bottom-right"
-        autoClose={3000}
-        theme="dark"
-        pauseOnHover
-      />
       {/* Modal de sesión expirada */}
       <Modal
         isOpen={sessionExpired}

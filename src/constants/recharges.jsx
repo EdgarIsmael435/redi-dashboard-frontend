@@ -12,6 +12,7 @@ export const companyConfig = {
     movistar: { leftBorder: "border-l-4 border-green-500", bg: "bg-green-500/10", icon: <LogoIcon company="Movistar" />, legendColor: "bg-green-500" },
     att: { leftBorder: "border-l-4 border-blue-500", bg: "bg-blue-500/10", icon: <LogoIcon company="ATT" />, legendColor: "bg-blue-500" },
     telcel: { leftBorder: "border-l-4 border-blue-900", bg: "bg-blue-900/10", icon: <LogoIcon company="TELCEL" />, legendColor: "bg-blue-900" },
+    bait: { leftBorder: "border-l-4 border-black-900", bg: "bg-black", icon: <LogoIcon company="BAIT" />, legendColor: "bg-black" },
 };
 
 export const companyOptions = [
@@ -21,6 +22,7 @@ export const companyOptions = [
     { value: "movistar", label: "Movistar" },
     { value: "att", label: "AT&T" },
     { value: "telcel", label: "Telcel" },
+    { value: "bait", label: "Bait" },
 ];
 
 export const statusOptions = [
