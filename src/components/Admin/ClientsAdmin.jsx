@@ -3,8 +3,9 @@ import api from "../../services/api";
 import Tabla from "../General/Table";
 import Modal from "../General/Modal";
 import { HeaderContainer } from "../General/HeaderContainer";
-import { BookUser, UserPlus } from "lucide-react";
+import { BookUser, UserPlus, CircleFadingArrowUp } from "lucide-react";
 import ClientForm from "./ClientForm";
+import ClientsBulkUpload from "./ClientsBulkUpload";
 
 
 const ClientsAdmin = () => {
@@ -14,6 +15,7 @@ const ClientsAdmin = () => {
     const [openDelete, setOpenDelete] = useState(false);
     const [openCreate, setOpenCreate] = useState(false);
     const [clienteSeleccionado, setClienteSeleccionado] = useState(null);
+    const [openBulk, setOpenBulk] = useState(false);
 
     //Cargar clientes
     const obtenerClientes = async () => {
@@ -169,16 +171,34 @@ const ClientsAdmin = () => {
                 emptyMessage="No hay clientes registrados"
                 loading={loading}
                 headerAction={
-                    <button
-                        onClick={() => {
-                            setOpenCreate(true);
-                            setClienteSeleccionado(null);
-                        }}
-                        className="flex items-center justify-center gap-2 w-full md:w-auto px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white text-xs font-medium rounded-xl shadow-lg transition-all border border-green-500/30"
-                    >
-                        <UserPlus className="w-4 h-4" />
-                        Nuevo Cliente
-                    </button>
+                    <div className="flex flex-col md:flex-row gap-3">
+                        <button
+                            onClick={() => {
+                                setOpenCreate(true);
+                                setClienteSeleccionado(null);
+                            }}
+                            className="flex items-center justify-center gap-2 w-full md:w-auto px-4 py-2
+                 bg-gradient-to-r from-red-500 to-red-600
+                 hover:from-red-600 hover:to-red-700
+                 text-white text-xs font-medium rounded-xl shadow-lg
+                 transition-all border border-green-500/30"
+                        >
+                            <UserPlus className="w-4 h-4" />
+                            Nuevo Cliente
+                        </button>
+
+                        <button
+                            onClick={() => setOpenBulk(true)}
+                            className="flex items-center justify-center gap-2 w-full md:w-auto px-4 py-2
+                 bg-gradient-to-r from-red-500 to-red-600
+                 hover:from-red-600 hover:to-red-700
+                 text-white text-xs font-medium rounded-xl shadow-lg
+                 transition-all border border-green-500/30"
+                        >
+                            <CircleFadingArrowUp className="w-4 h-4" />
+                            Alta masiva
+                        </button>
+                    </div>
                 }
             />
 
@@ -242,6 +262,25 @@ const ClientsAdmin = () => {
                     </button>
                 </div>
             </Modal>
+
+            {/* Modal Alta masiva */}
+            <Modal
+                isOpen={openBulk}
+                onClose={() => setOpenBulk(false)}
+                title="Alta masiva de clientes"
+                subTitle="Carga clientes desde Excel o CSV"
+                icon={CircleFadingArrowUp}
+                size="xl"
+            >
+                <ClientsBulkUpload
+                    onSuccess={() => {
+                        setOpenBulk(false);
+                        obtenerClientes(); // refresca tabla
+                    }}
+                    onCancel={() => setOpenBulk(false)}
+                />
+            </Modal>
+
         </div>
     );
 };

@@ -184,7 +184,37 @@ const Tabla = ({
   const totalPages = Math.ceil(filteredAndSortedData.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedData = filteredAndSortedData.slice(startIndex, startIndex + itemsPerPage);
+  const getVisiblePages = () => {
+    const delta = 2; // Páginas a mostrar a cada lado de la actual
+    const pages = [];
+    const rangeStart = Math.max(2, currentPage - delta);
+    const rangeEnd = Math.min(totalPages - 1, currentPage + delta);
 
+    // Siempre mostrar primera página
+    pages.push(1);
+
+    // Agregar "..." si hay un salto
+    if (rangeStart > 2) {
+      pages.push('...');
+    }
+
+    // Agregar páginas del rango
+    for (let i = rangeStart; i <= rangeEnd; i++) {
+      pages.push(i);
+    }
+
+    // Agregar "..." si hay un salto
+    if (rangeEnd < totalPages - 1) {
+      pages.push('...');
+    }
+
+    // Siempre mostrar última página (si hay más de una)
+    if (totalPages > 1) {
+      pages.push(totalPages);
+    }
+
+    return pages;
+  };
   const goToPage = (page) => {
     setCurrentPage(Math.max(1, Math.min(page, totalPages)));
   };
@@ -428,11 +458,11 @@ const Tabla = ({
 
       {/* Paginación */}
       {filteredAndSortedData.length > 0 && (
-        <div className="flex items-center justify-between text-xs">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
           <div className="text-gray-400">
             Mostrando {startIndex + 1}-{Math.min(startIndex + itemsPerPage, filteredAndSortedData.length)} de {filteredAndSortedData.length}
           </div>
-          <div className="flex gap-1">
+          <div className="flex gap-1 items-center">
             <button
               onClick={() => goToPage(currentPage - 1)}
               disabled={currentPage === 1}
@@ -440,18 +470,22 @@ const Tabla = ({
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
-            {[...Array(totalPages)].map((_, i) => (
-              <button
-                key={i + 1}
-                onClick={() => goToPage(i + 1)}
-                className={`px-3 py-1 rounded-lg border transition-all font-medium backdrop-blur-xl ${currentPage === i + 1
-                  ? 'bg-red-500/80 text-white border-red-400'
-                  : 'bg-white/10 hover:bg-white/20 text-gray-300 border-white/20 hover:text-white'
-                  }`}
-              >
-                {i + 1}
-              </button>
-            ))}
+            {getVisiblePages().map((page, i) =>
+              page === '...' ? (
+                <span key={`ellipsis-${i}`} className="px-2 text-gray-400">...</span>
+              ) : (
+                <button
+                  key={page}
+                  onClick={() => goToPage(page)}
+                  className={`px-3 py-1 rounded-lg border transition-all font-medium backdrop-blur-xl ${currentPage === page
+                    ? 'bg-red-500/80 text-white border-red-400'
+                    : 'bg-white/10 hover:bg-white/20 text-gray-300 border-white/20 hover:text-white'
+                    }`}
+                >
+                  {page}
+                </button>
+              )
+            )}
             <button
               onClick={() => goToPage(currentPage + 1)}
               disabled={currentPage === totalPages}

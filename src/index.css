@@ -1,1 +1,30 @@
 @import "tailwindcss";
+
+/* Scrollbar integrada al header */
+.scrollbar-redi {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color:rgba(159, 7, 18, 1) #1b2638;
+}
+
+/* Chrome / Edge / Safari */
+.scrollbar-redi::-webkit-scrollbar {    
+  margin-top: 2px;
+  margin-bottom: 2px;
+  width: 8px;
+}
+
+.scrollbar-redi::-webkit-scrollbar-track {    
+  background-color: rgba(159, 7, 18, 1); /* MISMO fondo que el thead */
+   border-radius: 999px;
+}
+
+.scrollbar-redi::-webkit-scrollbar-thumb {
+  background-color: rgba(159, 7, 18, 1);
+  border-radius: 999px;
+  border: 2px solid #1b2638; /* integra el thumb */
+  background-clip: padding-box;
+}
+
+.scrollbar-redi::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(159, 7, 18, 1);
+}

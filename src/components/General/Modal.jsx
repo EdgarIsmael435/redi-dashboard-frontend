@@ -18,72 +18,81 @@ const Modal = ({
     full: "max-w-6xl",
   };
 
-  // Permitir cerrar con Escape
+  // Cerrar con Escape
   useEffect(() => {
     const handleKey = (e) => e.key === "Escape" && onClose();
     if (isOpen) document.addEventListener("keydown", handleKey);
     return () => document.removeEventListener("keydown", handleKey);
-  }, [isOpen]);
+  }, [isOpen, onClose]);
 
   return (
     <AnimatePresence mode="wait">
       {isOpen && (
         <motion.div
-          key="modal-wrapper"
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50"
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex justify-center items-center"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.25 }}
           onClick={onClose}
         >
-          {/* Contenedor interno estático */}
-          <div className="flex justify-center items-center w-full">
-            <motion.div
-              key="modal-content"
-              className={`bg-slate-800/90 border border-white/10 rounded-2xl shadow-xl p-6 w-full ${sizeClasses[size]} relative`}
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              transition={{ duration: 0.25, ease: "easeOut" }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* Header */}
-              <div
-                className={`flex items-center gap-3 pb-3 mb-3 ${
-                  size !== "sm" ? "border-b border-white/10" : ""
-                }`}
-              >
-                {Icon && (
-                  <div className="relative w-12 h-12 bg-gradient-to-br from-red-500 via-red-600 to-red-700 rounded-2xl flex items-center justify-center shadow-lg">
-                    <div className="absolute inset-1 bg-black/80 rounded-xl flex items-center justify-center backdrop-blur-sm">
-                      <Icon className="w-6 h-6 text-white drop-shadow-lg" />
-                    </div>
+          <motion.div
+            onClick={(e) => e.stopPropagation()}
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.95, opacity: 0 }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
+            className={`
+              relative w-full ${sizeClasses[size]}
+              max-h-[90vh]           /* 🔑 5% arriba + 5% abajo */
+              bg-slate-800/90
+              border border-white/10
+              rounded-2xl
+              shadow-xl
+              flex flex-col          /* 🔑 layout vertical */
+            `}
+          >
+            {/* ================= HEADER (FIJO) ================= */}
+            <div className="flex items-center gap-3 p-6 pb-4 border-b border-white/10 shrink-0">
+              {Icon && (
+                <div className="relative w-12 h-12 bg-gradient-to-br from-red-500 via-red-600 to-red-700 rounded-2xl flex items-center justify-center shadow-lg">
+                  <div className="absolute inset-1 bg-black/80 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                    <Icon className="w-6 h-6 text-white" />
                   </div>
-                )}
-                <div>
-                  {title && (
-                    <h3 className="text-lg font-semibold text-white">{title}</h3>
-                  )}
-                  {subTitle && (
-                    <p className="text-xs text-gray-400">{subTitle}</p>
-                  )}
                 </div>
+              )}
+
+              <div>
+                {title && (
+                  <h3 className="text-lg font-semibold text-white">
+                    {title}
+                  </h3>
+                )}
+                {subTitle && (
+                  <p className="text-xs text-gray-400">{subTitle}</p>
+                )}
               </div>
 
               <button
                 onClick={onClose}
-                className="absolute top-3 right-3 text-white/70 hover:text-white transition-all"
+                className="ml-auto text-white/70 hover:text-white transition-all"
               >
                 ✕
               </button>
+            </div>
 
-              {/* Wrapper estático para el contenido dinámico */}
-              <div key="modal-body" className="pt-2">
-                {children}
-              </div>
-            </motion.div>
-          </div>
+            {/* ================= BODY (SCROLL) ================= */}
+            <div
+              className="
+                flex-1
+                overflow-y-auto
+                p-6
+                scrollbar-redi
+              "
+            >
+              {children}
+            </div>
+          </motion.div>
         </motion.div>
       )}
     </AnimatePresence>
