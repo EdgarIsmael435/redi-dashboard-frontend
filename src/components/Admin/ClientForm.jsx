@@ -130,7 +130,7 @@ const ClientForm = ({ cliente, onSubmit, onClose }) => {
 
   // Validaciones
   const isValid = {
-    numero_whatsapp: formData.numero_whatsapp.trim().length == 13,
+    numero_whatsapp: formData.numero_whatsapp.trim().length >= 10,
     nombre_cliente: formData.nombre_cliente.trim().length >= 2,
   };
 

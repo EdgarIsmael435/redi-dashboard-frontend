@@ -3,7 +3,8 @@ import { Clock, CheckCircle, Zap } from "lucide-react";
 import { io } from "socket.io-client";
 import { HeaderContainer } from "../General/HeaderContainer";
 import { TableRecharges } from "../Recharges/TableRecharges";
-import { companyConfig, LogoIcon } from "../../constants/recharges";
+import { companyConfig, LogoIcon, companyOptions, statusOptions } from "../../constants/recharges";
+import { Filter } from "../Recharges/Filter";
 
 const OperatorRechargesPanel = () => {
   const audioRef = useRef(null);
@@ -186,7 +187,16 @@ const OperatorRechargesPanel = () => {
         showBadge
         badge={pendingRecharges === 0 ? "" : String(pendingRecharges)}
       />
-
+      <Filter
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        filterCompany={filterCompany}
+        setFilterCompany={setFilterCompany}
+        filterStatus={filterStatus}
+        setFilterStatus={setFilterStatus}
+        companyOptions={companyOptions}
+        statusOptions={statusOptions}
+      />
       <TableRecharges
         recharges={recharges}
         filteredRecharges={filteredRecharges}
