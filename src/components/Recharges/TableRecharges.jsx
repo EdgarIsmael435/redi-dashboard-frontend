@@ -59,6 +59,7 @@ export const TableRecharges = ({
                                     <th className="px-3 py-2 text-left text-xs font-medium text-gray-200">Compañía</th>
                                     <th className="px-3 py-2 text-left text-xs font-medium text-gray-200">Monto</th>
                                     <th className="px-3 py-2 text-left text-xs font-medium text-gray-200">Número</th>
+                                    <th className="px-3 py-2 text-left text-xs font-medium text-gray-200">Fecha Panza</th>
                                     <th className="px-3 py-2 text-left text-xs font-medium text-gray-200">Folio</th>
                                     <th className="px-3 py-2 text-left text-xs font-medium text-gray-200">Prioridad</th>
                                     <th className="px-3 py-2 text-left text-xs font-medium text-gray-200">Acción</th>
@@ -80,6 +81,7 @@ export const TableRecharges = ({
                                         const amount = r.Monto;
                                         const priority = r.PrioridadCliente;
                                         const folioAuto = r.FolioAuto || 0;
+                                        const fechaPanza = r.fechaPanza || 'NA';
 
                                         return (
                                             <tr
@@ -136,6 +138,9 @@ export const TableRecharges = ({
                                                             )}
                                                         </button>
                                                     </div>
+                                                </td>
+                                                <td className="px-3 py-2">
+                                                    <span className="text-xs font-medium text-white">{fechaPanza}</span>
                                                 </td>
 
                                                 <td className="px-3 py-2">
@@ -196,6 +201,7 @@ export const TableRecharges = ({
                             const company = r.Compania.toLowerCase();
                             const number = r.Numero;
                             const amount = r.Monto;
+                            const fechaPanza = r.fechaPanza || 'NA';
                             const priority = r.PrioridadCliente;
                             const folioAuto = r.FolioAuto || 0;
 
@@ -218,12 +224,19 @@ export const TableRecharges = ({
                                             </div>
                                             <span className="text-xs font-semibold text-white">${amount}</span>
                                         </div>
-                                        <span className={`px-2 py-0.5 rounded-md text-xs font-medium backdrop-blur-sm border ${status === "PENDIENTE"
-                                            ? "bg-amber-500/20 text-amber-200 border-amber-500/30"
-                                            : "bg-green-500/20 text-green-200 border-green-500/30"
-                                            }`}>
-                                            {status}
-                                        </span>
+                                        <div className="flex items-center gap-2">
+                                            {fechaPanza !== 'NA' &&
+                                                <span className="px-2 py-0.5 rounded-md text-xs font-medium backdrop-blur-sm border bg-white/10 text-white/70 border-white/20">
+                                                    Panza: {fechaPanza}
+                                                </span>
+                                            }
+                                            <span className={`px-2 py-0.5 rounded-md text-xs font-medium backdrop-blur-sm border ${status === "PENDIENTE"
+                                                ? "bg-amber-500/20 text-amber-200 border-amber-500/30"
+                                                : "bg-green-500/20 text-green-200 border-green-500/30"
+                                                }`}>
+                                                {status}
+                                            </span>
+                                        </div>
                                     </div>
 
                                     {/* Número con botón de copiar */}

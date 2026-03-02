@@ -61,6 +61,8 @@ const OperatorRechargesPanel = () => {
 
 
     socket.on("recharges", (data) => {
+      console.log(data);
+      
       setRecharges(data);
     });
 
