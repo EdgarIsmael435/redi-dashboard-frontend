@@ -81,7 +81,7 @@ export const TableRecharges = ({
                                         const amount = r.Monto;
                                         const priority = r.PrioridadCliente;
                                         const folioAuto = r.FolioAuto || 0;
-                                        const fechaPanza = r.fechaPanza || 'NA';
+                                        const fechaPanza = r.FechaPanza || 'NA';
 
                                         return (
                                             <tr
@@ -201,7 +201,7 @@ export const TableRecharges = ({
                             const company = r.Compania.toLowerCase();
                             const number = r.Numero;
                             const amount = r.Monto;
-                            const fechaPanza = r.fechaPanza || 'NA';
+                            const fechaPanza = r.FechaPanza || 'NA';
                             const priority = r.PrioridadCliente;
                             const folioAuto = r.FolioAuto || 0;
 
