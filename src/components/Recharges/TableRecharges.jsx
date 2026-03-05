@@ -81,7 +81,13 @@ export const TableRecharges = ({
                                         const amount = r.Monto;
                                         const priority = r.PrioridadCliente;
                                         const folioAuto = r.FolioAuto || 0;
-                                        const fechaPanza = r.FechaPanza || 'NA';
+                                        const fechaPanza = r.FechaPanza
+                                            ? new Date(r.FechaPanza).toLocaleDateString('es-MX', {
+                                                day: '2-digit',
+                                                month: '2-digit',
+                                                year: 'numeric'
+                                            })
+                                            : 'NA';
 
                                         return (
                                             <tr
@@ -200,10 +206,16 @@ export const TableRecharges = ({
                             const status = r.Estado;
                             const company = r.Compania.toLowerCase();
                             const number = r.Numero;
-                            const amount = r.Monto;
-                            const fechaPanza = r.FechaPanza || 'NA';
+                            const amount = r.Monto;                            
                             const priority = r.PrioridadCliente;
                             const folioAuto = r.FolioAuto || 0;
+                            const fechaPanza = r.FechaPanza
+                                ? new Date(r.FechaPanza).toLocaleDateString('es-MX', {
+                                    day: '2-digit',
+                                    month: '2-digit',
+                                    year: 'numeric'
+                                })
+                                : 'NA';
 
                             return (
                                 <div
