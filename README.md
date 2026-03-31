@@ -1,12 +1,83 @@
-# React + Vite
+# REDi — Dashboard Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Panel de administración en tiempo real para operadores del sistema REDi. Permite gestionar el flujo de recargas móviles recibidas vía WhatsApp, visualizar estados con Socket.IO, administrar colas de atención por cliente y controlar acceso por roles.
 
-Currently, two official plugins are available:
+## Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+| Capa | Tecnología |
+|---|---|
+| Framework | React 19 |
+| Build tool | Vite 7 + SWC |
+| Routing | React Router 7 |
+| Tiempo real | Socket.IO Client 4 |
+| Estilos | Tailwind CSS 4 |
+| Animaciones | Framer Motion 12 |
+| Iconos | Lucide React |
+| HTTP | Axios |
+| Selectores | React Select |
+| Exportación | xlsx (SheetJS) |
 
-## Expanding the ESLint configuration
+## Características principales
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **Vista en tiempo real** — Las recargas entrantes aparecen instantáneamente vía Socket.IO sin recargar la página.
+- **Gestión de estados** — Cambio de estado por recarga: pendiente → en proceso → completada.
+- **Control por roles** — Acceso diferenciado entre administradores y operadores.
+- **Cola de atención** — Asignación de recargas por operador disponible.
+- **Exportación a Excel** — Generación de reportes en `.xlsx` desde el panel.
+- **Diseño glassmorphism** — UI moderna con animaciones via Framer Motion, optimizada para uso operativo continuo.
+
+## Variables de entorno
+
+```env
+VITE_API_URL=http://localhost:3000
+VITE_SOCKET_URL=http://localhost:3000
+```
+
+## Instalación y ejecución
+
+```bash
+# Clonar el repositorio
+git clone https://github.com/EdgarIsmael435/redi-dashboard-frontend.git
+cd redi-dashboard-frontend
+
+# Instalar dependencias
+npm install
+
+# Configurar variables de entorno
+cp .env.example .env
+# Editar VITE_API_URL y VITE_SOCKET_URL apuntando al backend
+
+# Desarrollo
+npm run dev
+
+# Build para producción
+npm run build
+
+# Preview del build
+npm run preview
+```
+
+## Requisitos previos
+
+- Node.js 18+
+- Backend [`redi-bot-backend`](https://github.com/EdgarIsmael435/redi-bot-backend) corriendo y accesible
+
+## Despliegue en producción
+
+El build generado en `dist/` se sirve como sitio estático vía Nginx:
+
+```nginx
+server {
+    listen 80;
+    root /var/www/redi-dashboard/dist;
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+}
+```
+
+## Repositorio relacionado
+
+- **API y bot de WhatsApp:** [redi-bot-backend](https://github.com/EdgarIsmael435/redi-bot-backend)
