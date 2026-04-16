@@ -3,7 +3,7 @@ import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import SideBar from "../General/SideBar";
 import { BackContainer } from "../General/BackContainer";
 import OperatorRechargesPanel from "./OperatorRechargesPanel";
-import NotFound from "../General/NotFound"; 
+import NotFound from "../General/NotFound";
 
 export default function DashboardOperator() {
   const [isExpanded, setIsExpanded] = useState(false);
