@@ -7,7 +7,9 @@ export const TableRecharges = ({
     companyConfig,
     handleFolioChange,
     handleSend,
+    handleReject,
     sendingId,
+    rejectingId,
     PriorityBadge,
     StatusIcon,
     LogoIcon,
@@ -16,6 +18,12 @@ export const TableRecharges = ({
     const [copiedStates, setCopiedStates] = useState({});
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
+
+    const statusBadgeClasses = (status) => {
+        if (status === "PENDIENTE") return "bg-amber-500/20 text-amber-200 border-amber-500/30";
+        if (status === "RECHAZADO") return "bg-red-500/20 text-red-200 border-red-500/30";
+        return "bg-green-500/20 text-green-200 border-green-500/30";
+    };
 
     const copyNumber = async (number, id) => {
         try {
@@ -107,10 +115,7 @@ export const TableRecharges = ({
                                                 </td>
 
                                                 <td className="px-3 py-2">
-                                                    <span className={`px-2 py-1 rounded-lg text-xs font-medium backdrop-blur-sm border ${status === "PENDIENTE"
-                                                        ? "bg-amber-500/20 text-amber-200 border-amber-500/30"
-                                                        : "bg-green-500/20 text-green-200 border-green-500/30"
-                                                        }`}>
+                                                    <span className={`px-2 py-1 rounded-lg text-xs font-medium backdrop-blur-sm border ${statusBadgeClasses(status)}`}>
                                                         {status}
                                                     </span>
                                                 </td>
@@ -152,13 +157,11 @@ export const TableRecharges = ({
                                                 <td className="px-3 py-2">
                                                     <input
                                                         type="text"
-                                                        value={r.Folio || ""}
+                                                        value={status === "RECHAZADO" ? "SIN FOLIO ASIGNADO" : (r.Folio || "")}
                                                         onChange={(e) => handleFolioChange(id, e.target.value)}
-                                                        disabled={status === "COMPLETADO"}
+                                                        disabled={status === "COMPLETADO" || status === "RECHAZADO"}
                                                         placeholder="Folio..."
-                                                        className={
-                                                            `w-full rounded-lg px-2 py-1 backdrop-blur-xl text-white placeholder-gray-400 focus:outline-none focus:border-gray-950 focus:ring-1 focus:ring-gray-900/50 disabled:bg-white/5 transition-all duration-300 text-xs
-                                                        ${folioAuto && !r.Folio ? 'animate-pulse border border-red-600 bg-red-600/20' : 'border border-white/20 bg-white/5'}`}
+                                                        className="w-full rounded-lg px-2 py-1 backdrop-blur-xl text-white placeholder-gray-400 focus:outline-none focus:border-gray-950 focus:ring-1 focus:ring-gray-900/50 disabled:bg-white/5 transition-all duration-300 text-xs border border-white/20 bg-white/5"
                                                     />
                                                 </td>
 
@@ -168,17 +171,30 @@ export const TableRecharges = ({
 
                                                 <td className="px-3 py-2">
                                                     {status === "PENDIENTE" ? (
-                                                        <button
-                                                            onClick={() => handleSend(id, folioAuto, userData?.id, userData?.nombreUsuario)}
-                                                            disabled={!r.Folio || sendingId === id}
-                                                            className="px-3 py-1.5 rounded-lg bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-medium disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-1 focus:ring-red-500/50 shadow-md text-xs backdrop-blur-xl"
-                                                        >
-                                                            {sendingId === id ? (
-                                                                <span className="inline-block w-2 h-2 border-5 border-white border-t-transparent rounded-full animate-spin"></span>
-                                                            ) : (
-                                                                "Procesar"
-                                                            )}
-                                                        </button>
+                                                        <div className="flex items-center gap-1.5">
+                                                            <button
+                                                                onClick={() => handleSend(id, folioAuto, userData?.id, userData?.nombreUsuario)}
+                                                                disabled={!r.Folio || sendingId === id || rejectingId === id}
+                                                                className="px-3 py-1.5 rounded-lg bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-medium disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-1 focus:ring-red-500/50 shadow-md text-xs backdrop-blur-xl"
+                                                            >
+                                                                {sendingId === id ? (
+                                                                    <span className="inline-block w-2 h-2 border-5 border-white border-t-transparent rounded-full animate-spin"></span>
+                                                                ) : (
+                                                                    "Procesar"
+                                                                )}
+                                                            </button>
+                                                            <button
+                                                                onClick={() => handleReject(id, userData?.id)}
+                                                                disabled={sendingId === id || rejectingId === id}
+                                                                className="px-3 py-1.5 rounded-lg bg-red-950/40 hover:bg-red-900/50 border border-red-500/40 text-red-200 hover:text-white font-medium disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-red-500/50 text-xs backdrop-blur-xl"
+                                                            >
+                                                                {rejectingId === id ? (
+                                                                    <span className="inline-block w-2 h-2 border-5 border-white border-t-transparent rounded-full animate-spin"></span>
+                                                                ) : (
+                                                                    "Rechazar"
+                                                                )}
+                                                            </button>
+                                                        </div>
                                                     ) : (
                                                         <StatusIcon status={status} />
                                                     )}
@@ -242,10 +258,7 @@ export const TableRecharges = ({
                                                     Panza: {fechaPanza}
                                                 </span>
                                             }
-                                            <span className={`px-2 py-0.5 rounded-md text-xs font-medium backdrop-blur-sm border ${status === "PENDIENTE"
-                                                ? "bg-amber-500/20 text-amber-200 border-amber-500/30"
-                                                : "bg-green-500/20 text-green-200 border-green-500/30"
-                                                }`}>
+                                            <span className={`px-2 py-0.5 rounded-md text-xs font-medium backdrop-blur-sm border ${statusBadgeClasses(status)}`}>
                                                 {status}
                                             </span>
                                         </div>
@@ -276,25 +289,37 @@ export const TableRecharges = ({
                                     <div className="flex items-center gap-2">
                                         <input
                                             type="text"
-                                            value={r.Folio || ""}
+                                            value={status === "RECHAZADO" ? "SIN FOLIO ASIGNADO" : (r.Folio || "")}
                                             onChange={(e) => handleFolioChange(id, e.target.value)}
-                                            disabled={status === "COMPLETADO"}
+                                            disabled={status === "COMPLETADO" || status === "RECHAZADO"}
                                             placeholder="Folio"
-                                            className={`flex-1 rounded-md px-2 py-1 backdrop-blur-xl text-white placeholder-gray-400 focus:outline-none focus:border-gray-950 focus:ring-1 focus:ring-gray-900/50 disabled:bg-white/5 transition-all duration-300 text-xs 
-                                        ${folioAuto && !r.Folio ? 'animate-pulse border border-red-600 bg-red-600/20' : 'border border-white/20 bg-white/5 '}`}
+                                            className="flex-1 rounded-md px-2 py-1 backdrop-blur-xl text-white placeholder-gray-400 focus:outline-none focus:border-gray-950 focus:ring-1 focus:ring-gray-900/50 disabled:bg-white/5 transition-all duration-300 text-xs border border-white/20 bg-white/5"
                                         />
                                         {status === "PENDIENTE" ? (
-                                            <button
-                                                onClick={() => handleSend(id, folioAuto, userData?.id, userData?.nombreUsuario)}
-                                                disabled={!r.Folio || sendingId === id}
-                                                className="px-3 py-1 rounded-md bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-medium disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-red-500/50 shadow-md text-xs backdrop-blur-xl whitespace-nowrap"
-                                            >
-                                                {sendingId === id ? (
-                                                    <span className="inline-block w-2 h-2 border-5 border-white border-t-transparent rounded-full animate-spin"></span>
-                                                ) : (
-                                                    "Procesar"
-                                                )}
-                                            </button>
+                                            <div className="flex items-center gap-1.5 flex-1">
+                                                <button
+                                                    onClick={() => handleSend(id, folioAuto, userData?.id, userData?.nombreUsuario)}
+                                                    disabled={!r.Folio || sendingId === id || rejectingId === id}
+                                                    className="flex-1 px-3 py-1 rounded-md bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-medium disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-red-500/50 shadow-md text-xs backdrop-blur-xl whitespace-nowrap"
+                                                >
+                                                    {sendingId === id ? (
+                                                        <span className="inline-block w-2 h-2 border-5 border-white border-t-transparent rounded-full animate-spin"></span>
+                                                    ) : (
+                                                        "Procesar"
+                                                    )}
+                                                </button>
+                                                <button
+                                                    onClick={() => handleReject(id, userData?.id)}
+                                                    disabled={sendingId === id || rejectingId === id}
+                                                    className="flex-1 px-3 py-1 rounded-md bg-red-950/40 hover:bg-red-900/50 border border-red-500/40 text-red-200 hover:text-white font-medium disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-red-500/50 text-xs backdrop-blur-xl whitespace-nowrap"
+                                                >
+                                                    {rejectingId === id ? (
+                                                        <span className="inline-block w-2 h-2 border-5 border-white border-t-transparent rounded-full animate-spin"></span>
+                                                    ) : (
+                                                        "Rechazar"
+                                                    )}
+                                                </button>
+                                            </div>
                                         ) : (
                                             <div className="flex items-center justify-center">
                                                 <StatusIcon status={status} />

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Clock, CheckCircle, Zap } from "lucide-react";
+import { Clock, CheckCircle, XCircle, Zap } from "lucide-react";
 import { io } from "socket.io-client";
 import { HeaderContainer } from "../General/HeaderContainer";
 import { Filter } from "../Recharges/Filter";
@@ -15,6 +15,7 @@ const AdminRechargesPanel = () => {
   const [recharges, setRecharges] = useState([]);
   const [isConnected, setIsConnected] = useState(false);
   const [sendingId, setSendingId] = useState(null);
+  const [rejectingId, setRejectingId] = useState(null);
   const [user, setUser] = useState(null);
   const socketRef = useRef(null);
 
@@ -66,6 +67,7 @@ const AdminRechargesPanel = () => {
 
     socket.on("recharge-updated", (updated) => {
       setSendingId(null);
+      setRejectingId(null);
       setRecharges((prev) =>
         prev.map((r) => (r.id_ticketRecarga === updated.id_ticketRecarga ? updated : r))
       );
@@ -123,6 +125,18 @@ const AdminRechargesPanel = () => {
     }
   };
 
+  const handleReject = (id_ticketRecarga, id_usuario_redi) => {
+    if (rejectingId === id_ticketRecarga) return;
+    setRejectingId(id_ticketRecarga);
+
+    if (socketRef.current) {
+      socketRef.current.emit("reject-recharge", {
+        ticketId: id_ticketRecarga,
+        id_usuario_redi: id_usuario_redi,
+      });
+    }
+  };
+
   const filteredRecharges = recharges.filter((r) => {
     const number = r.Numero;
     const company = r.Compania.toLowerCase();
@@ -133,12 +147,11 @@ const AdminRechargesPanel = () => {
     return matchesSearch && matchesCompany && matchesStatus;
   });
 
-  const StatusIcon = ({ status }) =>
-    status === "PENDIENTE" ? (
-      <Clock className="w-4 h-4 text-amber-400" />
-    ) : (
-      <CheckCircle className="w-4 h-4 text-green-400" />
-    );
+  const StatusIcon = ({ status }) => {
+    if (status === "PENDIENTE") return <Clock className="w-4 h-4 text-amber-400" />;
+    if (status === "RECHAZADO") return <XCircle className="w-4 h-4 text-red-400" />;
+    return <CheckCircle className="w-4 h-4 text-green-400" />;
+  };
 
   const PriorityBadge = ({ priority }) => {
     const colors = {
@@ -183,7 +196,9 @@ const AdminRechargesPanel = () => {
         companyConfig={companyConfig}
         handleFolioChange={handleFolioChange}
         handleSend={handleSend}
+        handleReject={handleReject}
         sendingId={sendingId}
+        rejectingId={rejectingId}
         PriorityBadge={PriorityBadge}
         StatusIcon={StatusIcon}
         LogoIcon={LogoIcon}
