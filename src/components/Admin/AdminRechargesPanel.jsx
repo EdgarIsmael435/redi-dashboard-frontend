@@ -15,7 +15,7 @@ const AdminRechargesPanel = () => {
   const [recharges, setRecharges] = useState([]);
   const [isConnected, setIsConnected] = useState(false);
   const [sendingId, setSendingId] = useState(null);
-  const [rejectingId, setRejectingId] = useState(null);
+  const [remindingId, setRemindingId] = useState(null);
   const [user, setUser] = useState(null);
   const socketRef = useRef(null);
 
@@ -67,7 +67,6 @@ const AdminRechargesPanel = () => {
 
     socket.on("recharge-updated", (updated) => {
       setSendingId(null);
-      setRejectingId(null);
       setRecharges((prev) =>
         prev.map((r) => (r.id_ticketRecarga === updated.id_ticketRecarga ? updated : r))
       );
@@ -125,15 +124,16 @@ const AdminRechargesPanel = () => {
     }
   };
 
-  const handleReject = (id_ticketRecarga, id_usuario_redi) => {
-    if (rejectingId === id_ticketRecarga) return;
-    setRejectingId(id_ticketRecarga);
+  const handleRemind = (id_ticketRecarga) => {
+    if (remindingId === id_ticketRecarga) return;
+    setRemindingId(id_ticketRecarga);
 
     if (socketRef.current) {
-      socketRef.current.emit("reject-recharge", {
-        ticketId: id_ticketRecarga,
-        id_usuario_redi: id_usuario_redi,
+      socketRef.current.emit("remind-recharge", { ticketId: id_ticketRecarga }, () => {
+        setRemindingId(null);
       });
+    } else {
+      setRemindingId(null);
     }
   };
 
@@ -196,9 +196,9 @@ const AdminRechargesPanel = () => {
         companyConfig={companyConfig}
         handleFolioChange={handleFolioChange}
         handleSend={handleSend}
-        handleReject={handleReject}
+        handleRemind={handleRemind}
         sendingId={sendingId}
-        rejectingId={rejectingId}
+        remindingId={remindingId}
         PriorityBadge={PriorityBadge}
         StatusIcon={StatusIcon}
         LogoIcon={LogoIcon}
