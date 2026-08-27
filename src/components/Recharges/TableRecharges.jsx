@@ -65,6 +65,8 @@ export const TableRecharges = ({
                                     <th className="px-3 py-2 text-left text-xs font-medium text-gray-200">ID</th>
                                     <th className="px-3 py-2 text-left text-xs font-medium text-gray-200">Estado</th>
                                     <th className="px-3 py-2 text-left text-xs font-medium text-gray-200">Compañía</th>
+                                    <th className="px-3 py-2 text-left text-xs font-medium text-gray-200">Producto</th>
+                                    <th className="px-3 py-2 text-left text-xs font-medium text-gray-200">Mayorista</th>
                                     <th className="px-3 py-2 text-left text-xs font-medium text-gray-200">Monto</th>
                                     <th className="px-3 py-2 text-left text-xs font-medium text-gray-200">Número</th>
                                     <th className="px-3 py-2 text-left text-xs font-medium text-gray-200">Fecha Panza</th>
@@ -76,7 +78,7 @@ export const TableRecharges = ({
                             <tbody>
                                 {paginatedRecharges.length === 0 ? (
                                     <tr>
-                                        <td colSpan="8" className="px-3 py-6 text-center text-gray-400 text-sm">
+                                        <td colSpan="11" className="px-3 py-6 text-center text-gray-400 text-sm">
                                             {recharges.length === 0 ? "Nada que mostrar" : "Esperando recargas..."}
                                         </td>
                                     </tr>
@@ -87,6 +89,8 @@ export const TableRecharges = ({
                                         const company = r.Compania.toLowerCase();
                                         const number = r.Numero;
                                         const amount = r.Monto;
+                                        const producto = r.Producto || "—";
+                                        const mayorista = r.Mayorista || "—";
                                         const priority = r.PrioridadCliente;
                                         const folioAuto = r.FolioAuto || 0;
                                         const fechaPanza = r.FechaPanza
@@ -126,6 +130,14 @@ export const TableRecharges = ({
                                                             {companyConfig[company]?.icon || <LogoIcon company={company} />}
                                                         </div>
                                                     </div>
+                                                </td>
+
+                                                <td className="px-3 py-2">
+                                                    <span className="text-xs font-medium text-gray-200">{producto}</span>
+                                                </td>
+
+                                                <td className="px-3 py-2">
+                                                    <span className="text-xs font-medium text-gray-200">{mayorista}</span>
                                                 </td>
 
                                                 <td className="px-3 py-2">
@@ -222,8 +234,10 @@ export const TableRecharges = ({
                             const status = r.Estado;
                             const company = r.Compania.toLowerCase();
                             const number = r.Numero;
-                            const amount = r.Monto;                            
+                            const amount = r.Monto;
                             const priority = r.PrioridadCliente;
+                            const producto = r.Producto || "—";
+                            const mayorista = r.Mayorista || "—";
                             const folioAuto = r.FolioAuto || 0;
                             const fechaPanza = r.FechaPanza
                                 ? new Date(r.FechaPanza).toLocaleDateString('es-MX', {
@@ -262,6 +276,12 @@ export const TableRecharges = ({
                                                 {status}
                                             </span>
                                         </div>
+                                    </div>
+
+                                    {/* Producto y Mayorista */}
+                                    <div className="flex items-center gap-1.5 mb-2 text-xs text-gray-300">
+                                        <span className="bg-white/5 border border-white/10 rounded-md px-2 py-0.5">Producto: {producto}</span>
+                                        <span className="bg-white/5 border border-white/10 rounded-md px-2 py-0.5 truncate">Mayorista: {mayorista}</span>
                                     </div>
 
                                     {/* Número con botón de copiar */}
