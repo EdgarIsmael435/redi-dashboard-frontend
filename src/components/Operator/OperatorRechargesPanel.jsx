@@ -68,8 +68,10 @@ const OperatorRechargesPanel = () => {
     });
 
     socket.on("new-recharge", (rec) => {
-      audioRef.current.currentTime = 0;
-      audioRef.current.play().catch(() => { });
+      if (audioRef.current) {
+        audioRef.current.currentTime = 0;
+        audioRef.current.play().catch(() => { });
+      }
       setRecharges((prev) => [...prev, rec]);
     });
 
