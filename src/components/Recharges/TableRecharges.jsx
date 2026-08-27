@@ -7,9 +7,9 @@ export const TableRecharges = ({
     companyConfig,
     handleFolioChange,
     handleSend,
-    handleReject,
+    handleRemind,
     sendingId,
-    rejectingId,
+    remindingId,
     PriorityBadge,
     StatusIcon,
     LogoIcon,
@@ -186,7 +186,7 @@ export const TableRecharges = ({
                                                         <div className="flex items-center gap-1.5">
                                                             <button
                                                                 onClick={() => handleSend(id, folioAuto, userData?.id, userData?.nombreUsuario)}
-                                                                disabled={!r.Folio || sendingId === id || rejectingId === id}
+                                                                disabled={!r.Folio || sendingId === id}
                                                                 className="px-3 py-1.5 rounded-lg bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-medium disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-1 focus:ring-red-500/50 shadow-md text-xs backdrop-blur-xl"
                                                             >
                                                                 {sendingId === id ? (
@@ -196,14 +196,15 @@ export const TableRecharges = ({
                                                                 )}
                                                             </button>
                                                             <button
-                                                                onClick={() => handleReject(id, userData?.id)}
-                                                                disabled={sendingId === id || rejectingId === id}
-                                                                className="px-3 py-1.5 rounded-lg bg-red-950/40 hover:bg-red-900/50 border border-red-500/40 text-red-200 hover:text-white font-medium disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-red-500/50 text-xs backdrop-blur-xl"
+                                                                onClick={() => handleRemind(id)}
+                                                                disabled={remindingId === id}
+                                                                title="Enviar recordatorio de registro de línea al cliente"
+                                                                className="px-3 py-1.5 rounded-lg bg-amber-950/40 hover:bg-amber-900/50 border border-amber-500/40 text-amber-200 hover:text-white font-medium disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-amber-500/50 text-xs backdrop-blur-xl"
                                                             >
-                                                                {rejectingId === id ? (
+                                                                {remindingId === id ? (
                                                                     <span className="inline-block w-2 h-2 border-5 border-white border-t-transparent rounded-full animate-spin"></span>
                                                                 ) : (
-                                                                    "Rechazar"
+                                                                    "Recordar"
                                                                 )}
                                                             </button>
                                                         </div>
@@ -319,7 +320,7 @@ export const TableRecharges = ({
                                             <div className="flex items-center gap-1.5 flex-1">
                                                 <button
                                                     onClick={() => handleSend(id, folioAuto, userData?.id, userData?.nombreUsuario)}
-                                                    disabled={!r.Folio || sendingId === id || rejectingId === id}
+                                                    disabled={!r.Folio || sendingId === id}
                                                     className="flex-1 px-3 py-1 rounded-md bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-medium disabled:from-gray-600 disabled:to-gray-700 disabled:cursor-not-allowed transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-red-500/50 shadow-md text-xs backdrop-blur-xl whitespace-nowrap"
                                                 >
                                                     {sendingId === id ? (
@@ -329,14 +330,15 @@ export const TableRecharges = ({
                                                     )}
                                                 </button>
                                                 <button
-                                                    onClick={() => handleReject(id, userData?.id)}
-                                                    disabled={sendingId === id || rejectingId === id}
-                                                    className="flex-1 px-3 py-1 rounded-md bg-red-950/40 hover:bg-red-900/50 border border-red-500/40 text-red-200 hover:text-white font-medium disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-red-500/50 text-xs backdrop-blur-xl whitespace-nowrap"
+                                                    onClick={() => handleRemind(id)}
+                                                    disabled={remindingId === id}
+                                                    title="Enviar recordatorio de registro de línea al cliente"
+                                                    className="flex-1 px-3 py-1 rounded-md bg-amber-950/40 hover:bg-amber-900/50 border border-amber-500/40 text-amber-200 hover:text-white font-medium disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-amber-500/50 text-xs backdrop-blur-xl whitespace-nowrap"
                                                 >
-                                                    {rejectingId === id ? (
+                                                    {remindingId === id ? (
                                                         <span className="inline-block w-2 h-2 border-5 border-white border-t-transparent rounded-full animate-spin"></span>
                                                     ) : (
-                                                        "Rechazar"
+                                                        "Recordar"
                                                     )}
                                                 </button>
                                             </div>
