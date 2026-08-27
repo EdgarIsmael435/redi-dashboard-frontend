@@ -10,6 +10,7 @@ export const TableRecharges = ({
     handleRemind,
     sendingId,
     remindingId,
+    remindErrorId,
     PriorityBadge,
     StatusIcon,
     LogoIcon,
@@ -207,6 +208,11 @@ export const TableRecharges = ({
                                                                     "Recordar"
                                                                 )}
                                                             </button>
+                                                            {remindErrorId === id && (
+                                                                <span className="text-[10px] text-amber-300 whitespace-nowrap">
+                                                                    Ya no se puede enviar, pasaron más de 24h
+                                                                </span>
+                                                            )}
                                                         </div>
                                                     ) : (
                                                         <StatusIcon status={status} />
@@ -348,6 +354,11 @@ export const TableRecharges = ({
                                             </div>
                                         )}
                                     </div>
+                                    {remindErrorId === id && (
+                                        <p className="text-[10px] text-amber-300 mt-1">
+                                            Ya no se puede enviar, pasaron más de 24h
+                                        </p>
+                                    )}
                                 </div>
                             );
                         })

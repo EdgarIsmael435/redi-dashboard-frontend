@@ -16,6 +16,7 @@ const AdminRechargesPanel = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [sendingId, setSendingId] = useState(null);
   const [remindingId, setRemindingId] = useState(null);
+  const [remindErrorId, setRemindErrorId] = useState(null);
   const [user, setUser] = useState(null);
   const socketRef = useRef(null);
 
@@ -129,10 +130,17 @@ const AdminRechargesPanel = () => {
   const handleRemind = (id_ticketRecarga) => {
     if (remindingId === id_ticketRecarga) return;
     setRemindingId(id_ticketRecarga);
+    setRemindErrorId(null);
 
     if (socketRef.current) {
-      socketRef.current.emit("remind-recharge", { ticketId: id_ticketRecarga }, () => {
+      socketRef.current.emit("remind-recharge", { ticketId: id_ticketRecarga }, (response) => {
         setRemindingId(null);
+        if (!response?.sent) {
+          setRemindErrorId(id_ticketRecarga);
+          setTimeout(() => {
+            setRemindErrorId((current) => (current === id_ticketRecarga ? null : current));
+          }, 4000);
+        }
       });
     } else {
       setRemindingId(null);
@@ -201,6 +209,7 @@ const AdminRechargesPanel = () => {
         handleRemind={handleRemind}
         sendingId={sendingId}
         remindingId={remindingId}
+        remindErrorId={remindErrorId}
         PriorityBadge={PriorityBadge}
         StatusIcon={StatusIcon}
         LogoIcon={LogoIcon}
