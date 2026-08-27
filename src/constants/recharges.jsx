@@ -29,4 +29,5 @@ export const statusOptions = [
     { value: "all", label: "Todos los estados" },
     { value: "PENDIENTE", label: "Pendiente" },
     { value: "COMPLETADO", label: "Completado" },
+    { value: "RECHAZADO", label: "Rechazado" },
 ];
