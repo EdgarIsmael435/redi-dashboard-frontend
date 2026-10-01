@@ -3,7 +3,7 @@ import { Clock, CheckCircle, XCircle, Zap } from "lucide-react";
 import { io } from "socket.io-client";
 import { HeaderContainer } from "../General/HeaderContainer";
 import { TableRecharges } from "../Recharges/TableRecharges";
-import { companyConfig, LogoIcon, companyOptions, statusOptions } from "../../constants/recharges";
+import { companyConfig, LogoIcon, companyOptions, statusOptions, enrolOptions, matchesEnrol } from "../../constants/recharges";
 import { Filter } from "../Recharges/Filter";
 
 const OperatorRechargesPanel = () => {
@@ -11,6 +11,7 @@ const OperatorRechargesPanel = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterCompany, setFilterCompany] = useState("all");
   const [filterStatus, setFilterStatus] = useState("PENDIENTE");
+  const [filterEnrol, setFilterEnrol] = useState("all");
   const [recharges, setRecharges] = useState([]);
   const [isConnected, setIsConnected] = useState(false);
   const [sendingId, setSendingId] = useState(null);
@@ -213,7 +214,7 @@ const OperatorRechargesPanel = () => {
     const matchesStatus =
       filterStatus === "all" || status === filterStatus;
 
-    return matchesSearch && matchesCompany && matchesStatus;
+    return matchesSearch && matchesCompany && matchesStatus && matchesEnrol(r, filterEnrol);
   });
 
   const StatusIcon = ({ status }) => {
@@ -258,6 +259,9 @@ const OperatorRechargesPanel = () => {
         setFilterStatus={setFilterStatus}
         companyOptions={companyOptions}
         statusOptions={statusOptions}
+        filterEnrol={filterEnrol}
+        setFilterEnrol={setFilterEnrol}
+        enrolOptions={enrolOptions}
       />
       <TableRecharges
         recharges={recharges}

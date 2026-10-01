@@ -4,7 +4,7 @@ import { io } from "socket.io-client";
 import { HeaderContainer } from "../General/HeaderContainer";
 import { Filter } from "../Recharges/Filter";
 import { TableRecharges } from "../Recharges/TableRecharges";
-import { companyConfig, companyOptions, statusOptions, LogoIcon } from "../../constants/recharges";
+import { companyConfig, companyOptions, statusOptions, LogoIcon, enrolOptions, matchesEnrol } from "../../constants/recharges";
 
 
 const AdminRechargesPanel = () => {
@@ -12,6 +12,7 @@ const AdminRechargesPanel = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterCompany, setFilterCompany] = useState("all");
   const [filterStatus, setFilterStatus] = useState("all");
+  const [filterEnrol, setFilterEnrol] = useState("all");
   const [recharges, setRecharges] = useState([]);
   const [isConnected, setIsConnected] = useState(false);
   const [sendingId, setSendingId] = useState(null);
@@ -191,7 +192,7 @@ const AdminRechargesPanel = () => {
     const matchesSearch = number.includes(searchTerm) || company.includes(searchTerm.toLowerCase());
     const matchesCompany = filterCompany === "all" || company === filterCompany.toLowerCase();
     const matchesStatus = filterStatus === "all" || status === filterStatus;
-    return matchesSearch && matchesCompany && matchesStatus;
+    return matchesSearch && matchesCompany && matchesStatus && matchesEnrol(r, filterEnrol);
   });
 
   const StatusIcon = ({ status }) => {
@@ -236,6 +237,9 @@ const AdminRechargesPanel = () => {
         setFilterStatus={setFilterStatus}
         companyOptions={companyOptions}
         statusOptions={statusOptions}
+        filterEnrol={filterEnrol}
+        setFilterEnrol={setFilterEnrol}
+        enrolOptions={enrolOptions}
       />
       <TableRecharges
         recharges={recharges}
