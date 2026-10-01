@@ -3,6 +3,7 @@ import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import SideBar from "../General/SideBar";
 import { BackContainer } from "../General/BackContainer";
 import OperatorRechargesPanel from "./OperatorRechargesPanel";
+import Reports from "../General/Reports";
 import NotFound from "../General/NotFound";
 
 export default function DashboardOperator() {
@@ -42,6 +43,7 @@ export default function DashboardOperator() {
         >
           <Routes>
             <Route path="panel" element={<OperatorRechargesPanel />} />
+            <Route path="reportes" element={<Reports />} />
             <Route path="*" element={<NotFound/>} />
           </Routes>
         </main>
