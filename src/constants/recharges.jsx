@@ -31,3 +31,19 @@ export const statusOptions = [
     { value: "COMPLETADO", label: "Completado" },
     { value: "RECHAZADO", label: "Rechazado" },
 ];
+
+export const enrolOptions = [
+    { value: "all", label: "Todo enrolamiento" },
+    { value: "vinculada", label: "Vinculadas" },
+    { value: "no_vinculada", label: "No vinculadas" },
+    { value: "sin_verificar", label: "Sin verificar" },
+];
+
+// Filtro de enrolamiento (solo aplica a Movistar)
+export const matchesEnrol = (r, filterEnrol) => {
+    if (filterEnrol === "all") return true;
+    if (r.Compania?.toLowerCase() !== "movistar") return false;
+    if (filterEnrol === "vinculada") return r.Enrolado === 1 || r.Enrolado === true;
+    if (filterEnrol === "no_vinculada") return r.Enrolado === 0 || r.Enrolado === false;
+    return r.Enrolado === null || r.Enrolado === undefined;
+};

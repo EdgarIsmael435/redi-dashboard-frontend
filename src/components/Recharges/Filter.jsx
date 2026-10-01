@@ -120,12 +120,17 @@ export const Filter = ({
     filterStatus,
     setFilterStatus,
     companyOptions,
-    statusOptions
+    statusOptions,
+    filterEnrol,
+    setFilterEnrol,
+    enrolOptions
 }) => {
     const selectedCompany =
         companyOptions.find((o) => o.value === filterCompany) || companyOptions[0];
     const selectedStatus =
         statusOptions.find((o) => o.value === filterStatus) || statusOptions[0];
+    const selectedEnrol =
+        enrolOptions?.find((o) => o.value === filterEnrol) || enrolOptions?.[0];
 
     return (
         <div className="bg-white/5 backdrop-blur-2xl border border-white/10 rounded-2xl p-4 shadow-lg">
@@ -170,6 +175,21 @@ export const Filter = ({
                             menuPosition="fixed"
                         />
                     </div>
+                    {enrolOptions && (
+                        <div className="w-full md:w-44">
+                            <Select
+                                value={selectedEnrol}
+                                onChange={(o) => setFilterEnrol(o.value)}
+                                options={enrolOptions}
+                                styles={customStyles}
+                                components={{ Option: CustomOption }}
+                                isSearchable={false}
+                                isClearable={false}
+                                menuPortalTarget={document.body}
+                                menuPosition="fixed"
+                            />
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
