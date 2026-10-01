@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Zap, User, LogOut, Settings, BookUser } from "lucide-react";
+import { Zap, User, LogOut, Settings, BookUser, FileSpreadsheet } from "lucide-react";
 import { IconRedi } from "./IconRedi";
 import { useNavigate, useLocation } from "react-router-dom";
 import { clearSession } from "../../services/auth";
@@ -26,9 +26,11 @@ const SideBar = ({ isExpanded, toggleExpand, badge = "", userData }) => {
                 { id: "panel", icon: Zap, label: "Recargas", badge, active: activeTab === "panel" },
                 { id: "operadores", icon: User, label: "Administrar Operadores", active: activeTab === "operadores" },
                 { id: "clientes", icon: BookUser, label: "Administrar Clientes", active: activeTab === "clientes" },
+                { id: "reportes", icon: FileSpreadsheet, label: "Reportes", active: activeTab === "reportes" },
             ]
             : [
                 { id: "panel", icon: Zap, label: "Recargas", badge, active: activeTab === "panel" },
+                { id: "reportes", icon: FileSpreadsheet, label: "Reportes", active: activeTab === "reportes" },
             ];
 
     const handleLogout = () => {

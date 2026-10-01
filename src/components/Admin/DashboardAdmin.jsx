@@ -5,6 +5,7 @@ import { BackContainer } from "../General/BackContainer";
 import AdminRechargesPanel from "./AdminRechargesPanel";
 import UsersAdmin from "./UsersAdmin";
 import ClientsAdmin from "./ClientsAdmin";
+import Reports from "../General/Reports";
 import NotFound from "../General/NotFound";
 
 
@@ -49,6 +50,7 @@ export default function DashboardAdmin() {
                         <Route path="panel" element={<AdminRechargesPanel />} />
                         <Route path="operadores" element={<UsersAdmin />} />
                         <Route path="clientes" element={<ClientsAdmin />} />
+                        <Route path="reportes" element={<Reports />} />
                         <Route path="*" element={<NotFound/>} />
                     </Routes>
                 </div>

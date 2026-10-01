@@ -3,7 +3,7 @@ import Select from "react-select";
 
 
 // Componente para opciones con iconos
-const CustomOption = ({ innerRef, innerProps, isFocused, isSelected, data }) => {    
+export const CustomOption = ({ innerRef, innerProps, isFocused, isSelected, data }) => {    
     return (
         <div
             ref={innerRef}
@@ -19,7 +19,7 @@ const CustomOption = ({ innerRef, innerProps, isFocused, isSelected, data }) => 
 };
 
 // Estilos customizados
-const customStyles = {
+export const customStyles = {
   control: (base, state) => ({
     ...base,
     background: "rgba(255,255,255,0.05)",

@@ -15,7 +15,11 @@ const AdminRechargesPanel = () => {
   const [recharges, setRecharges] = useState([]);
   const [isConnected, setIsConnected] = useState(false);
   const [sendingId, setSendingId] = useState(null);
-  const [rejectingId, setRejectingId] = useState(null);
+  const [remindingId, setRemindingId] = useState(null);
+  const [remindErrorId, setRemindErrorId] = useState(null);
+  const [checkingEnrolId, setCheckingEnrolId] = useState(null);
+  const [checkingAllEnrol, setCheckingAllEnrol] = useState(false);
+  const [enrolSweepResult, setEnrolSweepResult] = useState(null);
   const [user, setUser] = useState(null);
   const socketRef = useRef(null);
 
@@ -60,16 +64,23 @@ const AdminRechargesPanel = () => {
     });
 
     socket.on("new-recharge", (rec) => {
-      audioRef.current.currentTime = 0;
-      audioRef.current.play().catch(() => { });
+      if (audioRef.current) {
+        audioRef.current.currentTime = 0;
+        audioRef.current.play().catch(() => { });
+      }
       setRecharges((prev) => [...prev, rec]);
     });
 
     socket.on("recharge-updated", (updated) => {
       setSendingId(null);
-      setRejectingId(null);
       setRecharges((prev) =>
         prev.map((r) => (r.id_ticketRecarga === updated.id_ticketRecarga ? updated : r))
+      );
+    });
+
+    socket.on("recharge-enrolamiento", ({ id_ticketRecarga, Enrolado }) => {
+      setRecharges((prev) =>
+        prev.map((r) => (r.id_ticketRecarga === id_ticketRecarga ? { ...r, Enrolado } : r))
       );
     });
 
@@ -125,16 +136,52 @@ const AdminRechargesPanel = () => {
     }
   };
 
-  const handleReject = (id_ticketRecarga, id_usuario_redi) => {
-    if (rejectingId === id_ticketRecarga) return;
-    setRejectingId(id_ticketRecarga);
+  const handleRemind = (id_ticketRecarga) => {
+    if (remindingId === id_ticketRecarga) return;
+    setRemindingId(id_ticketRecarga);
+    setRemindErrorId(null);
 
     if (socketRef.current) {
-      socketRef.current.emit("reject-recharge", {
-        ticketId: id_ticketRecarga,
-        id_usuario_redi: id_usuario_redi,
+      socketRef.current.emit("remind-recharge", { ticketId: id_ticketRecarga }, (response) => {
+        setRemindingId(null);
+        if (!response?.sent) {
+          setRemindErrorId(id_ticketRecarga);
+          setTimeout(() => {
+            setRemindErrorId((current) => (current === id_ticketRecarga ? null : current));
+          }, 4000);
+        }
       });
+    } else {
+      setRemindingId(null);
     }
+  };
+
+  //Volver a consultar enrolamiento (solo Movistar)
+  const handleCheckEnrolamiento = (id_ticketRecarga) => {
+    if (checkingEnrolId === id_ticketRecarga) return;
+    setCheckingEnrolId(id_ticketRecarga);
+
+    if (socketRef.current) {
+      // El valor llega por "recharge-enrolamiento"
+      socketRef.current.emit("check-enrolamiento", { ticketId: id_ticketRecarga }, () => {
+        setCheckingEnrolId(null);
+      });
+    } else {
+      setCheckingEnrolId(null);
+    }
+  };
+
+  //Barrido de enrolamiento de todas las Movistar pendientes
+  const handleCheckAllEnrolamiento = () => {
+    if (checkingAllEnrol || !socketRef.current) return;
+    setCheckingAllEnrol(true);
+    setEnrolSweepResult(null);
+
+    socketRef.current.emit("check-enrolamiento-pendientes", (resumen) => {
+      setCheckingAllEnrol(false);
+      setEnrolSweepResult(resumen);
+      setTimeout(() => setEnrolSweepResult(null), 6000);
+    });
   };
 
   const filteredRecharges = recharges.filter((r) => {
@@ -196,9 +243,15 @@ const AdminRechargesPanel = () => {
         companyConfig={companyConfig}
         handleFolioChange={handleFolioChange}
         handleSend={handleSend}
-        handleReject={handleReject}
+        handleRemind={handleRemind}
         sendingId={sendingId}
-        rejectingId={rejectingId}
+        remindingId={remindingId}
+        remindErrorId={remindErrorId}
+        handleCheckEnrolamiento={handleCheckEnrolamiento}
+        checkingEnrolId={checkingEnrolId}
+        handleCheckAllEnrolamiento={handleCheckAllEnrolamiento}
+        checkingAllEnrol={checkingAllEnrol}
+        enrolSweepResult={enrolSweepResult}
         PriorityBadge={PriorityBadge}
         StatusIcon={StatusIcon}
         LogoIcon={LogoIcon}
