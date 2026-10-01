@@ -1,5 +1,34 @@
-import { Copy, Check, ChevronLeft, ChevronRight } from "lucide-react";
+import { Copy, Check, ChevronLeft, ChevronRight, RefreshCw } from "lucide-react";
 import { useState, useMemo } from "react";
+
+const estaEnrolada = (enrolado) => enrolado === 1 || enrolado === true;
+
+// Bullet de enrolamiento (solo Movistar). Click para volver a consultar
+const EnrolamientoBadge = ({ enrolado, checking, onCheck }) => {
+    const estado =
+        estaEnrolada(enrolado)
+            ? { label: "Vinculada", dot: "bg-green-400", classes: "bg-green-500/15 text-green-200 border-green-500/30" }
+            : enrolado === 0 || enrolado === false
+                ? { label: "No vinculada", dot: "bg-red-400", classes: "bg-red-500/15 text-red-200 border-red-500/30" }
+                : { label: "Sin verificar", dot: "bg-gray-400", classes: "bg-white/5 text-gray-300 border-white/20" };
+
+    return (
+        <button
+            type="button"
+            onClick={onCheck}
+            disabled={checking}
+            title="Volver a consultar enrolamiento"
+            className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md border text-[10px] font-medium whitespace-nowrap backdrop-blur-sm transition-all duration-300 hover:bg-white/10 disabled:cursor-wait ${estado.classes}`}
+        >
+            {checking ? (
+                <span className="inline-block w-2 h-2 border border-current border-t-transparent rounded-full animate-spin"></span>
+            ) : (
+                <span className={`inline-block w-1.5 h-1.5 rounded-full ${estado.dot}`}></span>
+            )}
+            {estado.label}
+        </button>
+    );
+};
 
 export const TableRecharges = ({
     recharges,
@@ -11,12 +40,30 @@ export const TableRecharges = ({
     sendingId,
     remindingId,
     remindErrorId,
+    handleCheckEnrolamiento,
+    checkingEnrolId,
+    handleCheckAllEnrolamiento,
+    checkingAllEnrol,
+    enrolSweepResult,
     PriorityBadge,
     StatusIcon,
     LogoIcon,
     userData
 }) => {
     const [copiedStates, setCopiedStates] = useState({});
+
+    const movistarPendientes = recharges.filter(
+        (r) => r.Estado === "PENDIENTE" && r.Compania?.toLowerCase() === "movistar"
+    ).length;
+
+    const sweepMessage = (res) => {
+        if (!res) return null;
+        if (res.error) return "No se pudo completar el barrido";
+        if (res.enCurso) return "Ya hay un barrido en curso";
+        if (res.total === 0) return "No hay Movistar pendientes";
+        return `${res.total} consultadas · ${res.vinculadas} vinculadas · ${res.noVinculadas} no vinculadas` +
+            (res.sinVerificar ? ` · ${res.sinVerificar} sin verificar` : "");
+    };
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
 
@@ -57,6 +104,23 @@ export const TableRecharges = ({
     return (
         <>
             <div className="bg-white/5 backdrop-blur-2xl border border-white/10 rounded-2xl p-4 shadow-2xl">
+                {/* Barrido de enrolamiento Movistar */}
+                <div className="flex flex-wrap items-center justify-end gap-2 mb-3">
+                    {enrolSweepResult && (
+                        <span className="text-[11px] text-gray-300">{sweepMessage(enrolSweepResult)}</span>
+                    )}
+                    <button
+                        type="button"
+                        onClick={handleCheckAllEnrolamiento}
+                        disabled={checkingAllEnrol || movistarPendientes === 0}
+                        title="Consultar el enrolamiento de todas las Movistar pendientes"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-green-950/40 hover:bg-green-900/50 border border-green-500/40 text-green-200 hover:text-white font-medium disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-green-500/50 text-xs backdrop-blur-xl"
+                    >
+                        <RefreshCw className={`w-3 h-3 ${checkingAllEnrol ? "animate-spin" : ""}`} />
+                        {checkingAllEnrol ? "Verificando..." : `Verificar enrolamiento Movistar (${movistarPendientes})`}
+                    </button>
+                </div>
+
                 {/* Tabla */}
                 <div className="hidden md:block bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl overflow-hidden mb-4">
                     <div className="overflow-x-auto">
@@ -70,6 +134,7 @@ export const TableRecharges = ({
                                     <th className="px-3 py-2 text-left text-xs font-medium text-gray-200">Mayorista</th>
                                     <th className="px-3 py-2 text-left text-xs font-medium text-gray-200">Monto</th>
                                     <th className="px-3 py-2 text-left text-xs font-medium text-gray-200">Número</th>
+                                    <th className="px-3 py-2 text-left text-xs font-medium text-gray-200">Enrolamiento</th>
                                     <th className="px-3 py-2 text-left text-xs font-medium text-gray-200">Fecha Panza</th>
                                     <th className="px-3 py-2 text-left text-xs font-medium text-gray-200">Folio</th>
                                     <th className="px-3 py-2 text-left text-xs font-medium text-gray-200">Prioridad</th>
@@ -79,7 +144,7 @@ export const TableRecharges = ({
                             <tbody>
                                 {paginatedRecharges.length === 0 ? (
                                     <tr>
-                                        <td colSpan="11" className="px-3 py-6 text-center text-gray-400 text-sm">
+                                        <td colSpan="12" className="px-3 py-6 text-center text-gray-400 text-sm">
                                             {recharges.length === 0 ? "Nada que mostrar" : "Esperando recargas..."}
                                         </td>
                                     </tr>
@@ -164,6 +229,18 @@ export const TableRecharges = ({
                                                     </div>
                                                 </td>
                                                 <td className="px-3 py-2">
+                                                    {company === "movistar" ? (
+                                                        <EnrolamientoBadge
+                                                            enrolado={r.Enrolado}
+                                                            checking={checkingEnrolId === id || (checkingAllEnrol && status === "PENDIENTE")}
+                                                            onCheck={() => handleCheckEnrolamiento(id)}
+                                                        />
+                                                    ) : (
+                                                        <span className="text-xs text-gray-500">—</span>
+                                                    )}
+                                                </td>
+
+                                                <td className="px-3 py-2">
                                                     <span className="text-xs font-medium text-white">{fechaPanza}</span>
                                                 </td>
 
@@ -196,18 +273,20 @@ export const TableRecharges = ({
                                                                     "Procesar"
                                                                 )}
                                                             </button>
-                                                            <button
-                                                                onClick={() => handleRemind(id)}
-                                                                disabled={remindingId === id}
-                                                                title="Enviar recordatorio de registro de línea al cliente"
-                                                                className="px-3 py-1.5 rounded-lg bg-amber-950/40 hover:bg-amber-900/50 border border-amber-500/40 text-amber-200 hover:text-white font-medium disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-amber-500/50 text-xs backdrop-blur-xl"
-                                                            >
-                                                                {remindingId === id ? (
-                                                                    <span className="inline-block w-2 h-2 border-5 border-white border-t-transparent rounded-full animate-spin"></span>
-                                                                ) : (
-                                                                    "Recordar"
-                                                                )}
-                                                            </button>
+                                                            {!estaEnrolada(r.Enrolado) && (
+                                                                <button
+                                                                    onClick={() => handleRemind(id)}
+                                                                    disabled={remindingId === id}
+                                                                    title="Enviar recordatorio de registro de línea al cliente"
+                                                                    className="px-3 py-1.5 rounded-lg bg-amber-950/40 hover:bg-amber-900/50 border border-amber-500/40 text-amber-200 hover:text-white font-medium disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-amber-500/50 text-xs backdrop-blur-xl"
+                                                                >
+                                                                    {remindingId === id ? (
+                                                                        <span className="inline-block w-2 h-2 border-5 border-white border-t-transparent rounded-full animate-spin"></span>
+                                                                    ) : (
+                                                                        "Recordar"
+                                                                    )}
+                                                                </button>
+                                                            )}
                                                             {remindErrorId === id && (
                                                                 <span className="text-[10px] text-amber-300 whitespace-nowrap">
                                                                     Ya no se puede enviar, pasaron más de 24h
@@ -289,6 +368,13 @@ export const TableRecharges = ({
                                     <div className="flex items-center gap-1.5 mb-2 text-xs text-gray-300">
                                         <span className="bg-white/5 border border-white/10 rounded-md px-2 py-0.5">Producto: {producto}</span>
                                         <span className="bg-white/5 border border-white/10 rounded-md px-2 py-0.5 truncate">Mayorista: {mayorista}</span>
+                                        {company === "movistar" && (
+                                            <EnrolamientoBadge
+                                                enrolado={r.Enrolado}
+                                                checking={checkingEnrolId === id || (checkingAllEnrol && status === "PENDIENTE")}
+                                                onCheck={() => handleCheckEnrolamiento(id)}
+                                            />
+                                        )}
                                     </div>
 
                                     {/* Número con botón de copiar */}
@@ -335,18 +421,20 @@ export const TableRecharges = ({
                                                         "Procesar"
                                                     )}
                                                 </button>
-                                                <button
-                                                    onClick={() => handleRemind(id)}
-                                                    disabled={remindingId === id}
-                                                    title="Enviar recordatorio de registro de línea al cliente"
-                                                    className="flex-1 px-3 py-1 rounded-md bg-amber-950/40 hover:bg-amber-900/50 border border-amber-500/40 text-amber-200 hover:text-white font-medium disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-amber-500/50 text-xs backdrop-blur-xl whitespace-nowrap"
-                                                >
-                                                    {remindingId === id ? (
-                                                        <span className="inline-block w-2 h-2 border-5 border-white border-t-transparent rounded-full animate-spin"></span>
-                                                    ) : (
-                                                        "Recordar"
-                                                    )}
-                                                </button>
+                                                {!estaEnrolada(r.Enrolado) && (
+                                                    <button
+                                                        onClick={() => handleRemind(id)}
+                                                        disabled={remindingId === id}
+                                                        title="Enviar recordatorio de registro de línea al cliente"
+                                                        className="flex-1 px-3 py-1 rounded-md bg-amber-950/40 hover:bg-amber-900/50 border border-amber-500/40 text-amber-200 hover:text-white font-medium disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-300 focus:outline-none focus:ring-1 focus:ring-amber-500/50 text-xs backdrop-blur-xl whitespace-nowrap"
+                                                    >
+                                                        {remindingId === id ? (
+                                                            <span className="inline-block w-2 h-2 border-5 border-white border-t-transparent rounded-full animate-spin"></span>
+                                                        ) : (
+                                                            "Recordar"
+                                                        )}
+                                                    </button>
+                                                )}
                                             </div>
                                         ) : (
                                             <div className="flex items-center justify-center">

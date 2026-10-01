@@ -17,6 +17,9 @@ const AdminRechargesPanel = () => {
   const [sendingId, setSendingId] = useState(null);
   const [remindingId, setRemindingId] = useState(null);
   const [remindErrorId, setRemindErrorId] = useState(null);
+  const [checkingEnrolId, setCheckingEnrolId] = useState(null);
+  const [checkingAllEnrol, setCheckingAllEnrol] = useState(false);
+  const [enrolSweepResult, setEnrolSweepResult] = useState(null);
   const [user, setUser] = useState(null);
   const socketRef = useRef(null);
 
@@ -72,6 +75,12 @@ const AdminRechargesPanel = () => {
       setSendingId(null);
       setRecharges((prev) =>
         prev.map((r) => (r.id_ticketRecarga === updated.id_ticketRecarga ? updated : r))
+      );
+    });
+
+    socket.on("recharge-enrolamiento", ({ id_ticketRecarga, Enrolado }) => {
+      setRecharges((prev) =>
+        prev.map((r) => (r.id_ticketRecarga === id_ticketRecarga ? { ...r, Enrolado } : r))
       );
     });
 
@@ -147,6 +156,34 @@ const AdminRechargesPanel = () => {
     }
   };
 
+  //Volver a consultar enrolamiento (solo Movistar)
+  const handleCheckEnrolamiento = (id_ticketRecarga) => {
+    if (checkingEnrolId === id_ticketRecarga) return;
+    setCheckingEnrolId(id_ticketRecarga);
+
+    if (socketRef.current) {
+      // El valor llega por "recharge-enrolamiento"
+      socketRef.current.emit("check-enrolamiento", { ticketId: id_ticketRecarga }, () => {
+        setCheckingEnrolId(null);
+      });
+    } else {
+      setCheckingEnrolId(null);
+    }
+  };
+
+  //Barrido de enrolamiento de todas las Movistar pendientes
+  const handleCheckAllEnrolamiento = () => {
+    if (checkingAllEnrol || !socketRef.current) return;
+    setCheckingAllEnrol(true);
+    setEnrolSweepResult(null);
+
+    socketRef.current.emit("check-enrolamiento-pendientes", (resumen) => {
+      setCheckingAllEnrol(false);
+      setEnrolSweepResult(resumen);
+      setTimeout(() => setEnrolSweepResult(null), 6000);
+    });
+  };
+
   const filteredRecharges = recharges.filter((r) => {
     const number = r.Numero;
     const company = r.Compania.toLowerCase();
@@ -210,6 +247,11 @@ const AdminRechargesPanel = () => {
         sendingId={sendingId}
         remindingId={remindingId}
         remindErrorId={remindErrorId}
+        handleCheckEnrolamiento={handleCheckEnrolamiento}
+        checkingEnrolId={checkingEnrolId}
+        handleCheckAllEnrolamiento={handleCheckAllEnrolamiento}
+        checkingAllEnrol={checkingAllEnrol}
+        enrolSweepResult={enrolSweepResult}
         PriorityBadge={PriorityBadge}
         StatusIcon={StatusIcon}
         LogoIcon={LogoIcon}
