@@ -4,6 +4,7 @@ import SideBar from "../General/SideBar";
 import { BackContainer } from "../General/BackContainer";
 import OperatorRechargesPanel from "./OperatorRechargesPanel";
 import Reports from "../General/Reports";
+import EnrolamientoConsulta from "../General/EnrolamientoConsulta";
 import NotFound from "../General/NotFound";
 
 export default function DashboardOperator() {
@@ -44,6 +45,7 @@ export default function DashboardOperator() {
           <Routes>
             <Route path="panel" element={<OperatorRechargesPanel />} />
             <Route path="reportes" element={<Reports />} />
+            <Route path="enrolamiento" element={<EnrolamientoConsulta />} />
             <Route path="*" element={<NotFound/>} />
           </Routes>
         </main>
