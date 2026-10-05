@@ -21,7 +21,7 @@ const formatFecha = (fecha, conHora = false) => {
 };
 
 const textoEnrolamiento = (r) => {
-    if (r.Compania?.toLowerCase() !== "movistar") return "";
+    if (r.Compania?.trim().toLowerCase() !== "movistar") return "";
     if (r.Enrolado === 1 || r.Enrolado === true) return "Vinculada";
     if (r.Enrolado === 0 || r.Enrolado === false) return "No vinculada";
     return "Sin verificar";
@@ -72,7 +72,7 @@ const Reports = () => {
             const { data } = await api.get("/tickets/reporte", { params: todo ? {} : { desde, hasta } });
 
             const rows = (data.data || []).filter((r) => {
-                const matchesCompany = filterCompany === "all" || r.Compania?.toLowerCase() === filterCompany;
+                const matchesCompany = filterCompany === "all" || r.Compania?.trim().toLowerCase() === filterCompany;
                 const matchesStatus = filterStatus === "all" || r.Estado === filterStatus;
                 return matchesCompany && matchesStatus;
             });
