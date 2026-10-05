@@ -53,7 +53,7 @@ export const TableRecharges = ({
     const [copiedStates, setCopiedStates] = useState({});
 
     const movistarPendientes = recharges.filter(
-        (r) => r.Estado === "PENDIENTE" && r.Compania?.toLowerCase() === "movistar"
+        (r) => r.Estado === "PENDIENTE" && r.Compania?.trim().toLowerCase() === "movistar"
     ).length;
 
     const sweepMessage = (res) => {
@@ -152,7 +152,7 @@ export const TableRecharges = ({
                                     paginatedRecharges.map((r) => {
                                         const id = r.id_ticketRecarga;
                                         const status = r.Estado;
-                                        const company = r.Compania.toLowerCase();
+                                        const company = r.Compania.trim().toLowerCase();
                                         const number = r.Numero;
                                         const amount = r.Monto;
                                         const producto = r.Producto || "—";
@@ -318,7 +318,7 @@ export const TableRecharges = ({
                         paginatedRecharges.map((r) => {
                             const id = r.id_ticketRecarga;
                             const status = r.Estado;
-                            const company = r.Compania.toLowerCase();
+                            const company = r.Compania.trim().toLowerCase();
                             const number = r.Numero;
                             const amount = r.Monto;
                             const priority = r.PrioridadCliente;

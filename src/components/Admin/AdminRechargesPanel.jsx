@@ -187,7 +187,7 @@ const AdminRechargesPanel = () => {
 
   const filteredRecharges = recharges.filter((r) => {
     const number = r.Numero;
-    const company = r.Compania.toLowerCase();
+    const company = r.Compania.trim().toLowerCase();
     const status = r.Estado;
     const matchesSearch = number.includes(searchTerm) || company.includes(searchTerm.toLowerCase());
     const matchesCompany = filterCompany === "all" || company === filterCompany.toLowerCase();

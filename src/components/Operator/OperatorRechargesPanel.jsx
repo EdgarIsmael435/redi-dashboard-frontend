@@ -203,7 +203,7 @@ const OperatorRechargesPanel = () => {
 
   const filteredRecharges = recharges.filter((r) => {
     const number = r.Numero;
-    const company = r.Compania.toLowerCase();
+    const company = r.Compania.trim().toLowerCase();
     const status = r.Estado;
 
     const matchesSearch =
